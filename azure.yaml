@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+name: foundry-agents-essentials
+metadata:
+  template: foundry-agents-essentials
+services:
+  backend:
+    project: src/app/backend
+    language: py
+    host: appservice
+hooks:
+  prepackage:
+    posix:
+      shell: sh
+      run: |
+        cd src/app/frontend
+        npm install
+        npm run build
+        rm -rf ../backend/static
+        cp -r dist ../backend/static
+    windows:
+      shell: pwsh
+      run: |
+        Set-Location src/app/frontend
+        npm install
+        npm run build
+        if (Test-Path ../backend/static) { Remove-Item -Recurse -Force ../backend/static }
+        Copy-Item -Recurse dist ../backend/static
