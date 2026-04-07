@@ -60,6 +60,7 @@ module userRoleAssignments 'modules/role-assignments.bicep' = {
     principalId: foundryUserPrincipalId
     principalType: 'User'
     foundryId: foundry.outputs.accountId
+    assignAccountOwnerRole: true
   }
 }
 

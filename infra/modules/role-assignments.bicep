@@ -7,6 +7,9 @@ param principalType string = 'ServicePrincipal'
 @description('Resource ID of the Foundry account')
 param foundryId string
 
+@description('Assign the Azure AI Account Owner role (required for Guardrails in Unit 7). Enable only for the user principal.')
+param assignAccountOwnerRole bool = false
+
 // Cognitive Services User
 var cognitiveServicesUserRoleId = 'a97b65f3-24c7-4388-baec-2e87135dc908'
 
@@ -40,8 +43,8 @@ resource azureAIUserRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = 
   }
 }
 
-// Needed only for Guardrails (Unit 7)
-resource azureAIAccountOwnerRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+// Needed only for Guardrails (Unit 7) — assigned only when assignAccountOwnerRole is true
+resource azureAIAccountOwnerRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (assignAccountOwnerRole) {
   name: guid(foundryId, principalId, azureAIAccountOwnerRoleId)
   scope: foundry
   properties: {
