@@ -34,8 +34,8 @@ A **Client Onboarding Tracker** (Python + React) with an MCP server that a Found
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-org/foundry-agents-essentials.git
-cd foundry-agents-essentials
+git clone https://github.com/your-org/foundry-agents-essentials-legal.git
+cd foundry-agents-essentials-legal
 ```
 
 ### 2. Deploy to Azure
