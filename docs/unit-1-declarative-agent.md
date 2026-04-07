@@ -90,7 +90,7 @@ Before you can create an agent, you need to deploy a language model to your AI S
 >   --query "[?model.format=='OpenAI'].{name:model.name, version:model.version, sku:model.skus[0].name}" -o table
 > ```
 
-> **💡 Tip:** For this workshop, a single chat model is sufficient. You can deploy additional models (e.g., a smaller `gpt-5.4-mini` for cost-effective tasks) later as needed.
+> **💡 Tip:** Consider deploying at least two models — for example, `gpt-4.1` as your primary model and a smaller model like `gpt-4.1-mini` as a backup. If you hit rate-per-minute (RPM) limits during the workshop with one model, you can quickly switch your agent to the other deployment using the same steps. This also lets participants compare response quality between models.
 
 ---
 
