@@ -45,22 +45,6 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-previ
   }
 }
 
-resource modelDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024-10-01' = {
-  parent: account
-  name: 'gpt-4.1-mini'
-  sku: {
-    capacity: 200
-    name: 'GlobalStandard'
-  }
-  properties: {
-    model: {
-      name: 'gpt-4.1-mini'
-      format: 'OpenAI'
-      version: '2025-04-14'
-    }
-  }
-}
-
 output accountName string = account.name
 output projectName string = project.name
 output accountEndpoint string = account.properties.endpoint

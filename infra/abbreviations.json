@@ -2,7 +2,6 @@
   "resourceAbbreviations": {
     "cognitiveServicesAccounts": "foundry",
     "webSites": "app",
-    "bingAccounts": "bing",
-    "searchServices": "search"
+    "bingAccounts": "bing"
   }
 }

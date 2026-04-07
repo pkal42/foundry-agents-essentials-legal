@@ -57,23 +57,23 @@ class OnboardingTracker:
         seed = [
             Onboarding(
                 id="OB-001",
-                client_name="Contoso Construction Ltd",
-                engagement_type="Building Renovation",
-                description="Full renovation of downtown office complex, 12 floors",
+                client_name="MCO",
+                engagement_type="Regulatory Compliance",
+                description="FDA labeling compliance review for new product line expansion",
                 status=Status.IN_REVIEW,
-                contact_email="j.smith@contoso.com",
+                contact_email="l.garcia@MCO.com",
                 created_at="2026-03-15T09:00:00Z",
                 notes=[
-                    Note(id="N-001", text="Initial scope review completed. Awaiting compliance check.", created_at="2026-03-16T14:30:00Z")
+                    Note(id="N-001", text="Initial scope review completed. Awaiting conflicts check.", created_at="2026-03-16T14:30:00Z")
                 ],
             ),
             Onboarding(
                 id="OB-002",
-                client_name="Woodgrove Legal Partners",
-                engagement_type="Litigation Support",
+                client_name="Adatum Corporation",
+                engagement_type="Litigation",
                 description="Contract dispute advisory for commercial lease agreement",
                 status=Status.APPROVED,
-                contact_email="m.chen@woodgrove.com",
+                contact_email="m.chen@adatum.com",
                 created_at="2026-03-10T11:00:00Z",
                 notes=[
                     Note(id="N-002", text="Conflict check passed. Engagement letter sent.", created_at="2026-03-11T09:00:00Z"),
@@ -82,11 +82,11 @@ class OnboardingTracker:
             ),
             Onboarding(
                 id="OB-003",
-                client_name="Fabrikam Consulting Group",
-                engagement_type="Strategy Advisory",
-                description="Digital transformation roadmap for supply chain operations",
+                client_name="Northwind Traders Inc",
+                engagement_type="Corporate & Transactions",
+                description="Acquisition due diligence and purchase agreement for regional competitor",
                 status=Status.PENDING,
-                contact_email="a.patel@fabrikam.com",
+                contact_email="a.patel@northwind.com",
                 created_at="2026-03-28T08:30:00Z",
             ),
         ]

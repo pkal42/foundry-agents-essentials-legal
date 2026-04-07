@@ -1,12 +1,12 @@
 # Foundry Agents Essentials
 
-A hands-on workshop for learning AI Agents with Microsoft Foundry. Build an intelligent client onboarding assistant that can search the web, understand documents, and manage real projects — no coding required.
+A hands-on workshop for learning AI Agents with Microsoft Foundry. Build an intelligent client onboarding agent for a law firm that can search the web, understand documents, and manage real matters — no coding required.
 
 ## What You'll Build
 
-A **Client Onboarding Tracker** (Python + React) with an MCP server that a Foundry agent uses to create onboardings, update status, and add notes — demonstrating how AI agents take real actions in business workflows.
+A **Client Onboarding Tracker** (Python + React) with an MCP server that a Foundry agent uses to create client matters, update status, and add notes — demonstrating how AI agents take real actions in legal workflows.
 
-**Scenario:** You progressively build one agent — a Client Onboarding Assistant — that helps professional services firms onboard new clients and engagements. Whether you're in legal, construction, or consulting, the onboarding pattern is the same: collect information, check compliance, create the engagement, and track progress.
+**Scenario:** You progressively build one agent — a Client Onboarding Agent — that helps law firms onboard new clients and matters. Whether you're handling litigation, corporate transactions, or regulatory compliance, the onboarding pattern is the same: collect information, run conflict checks, create the engagement, and track progress.
 
 ## Lab Units
 
@@ -14,14 +14,12 @@ A **Client Onboarding Tracker** (Python + React) with an MCP server that a Found
 |------|-------|-------------|
 | [Unit 1](docs/unit-1-declarative-agent.md) | Declarative Agent | Create your first agent in Microsoft Foundry |
 | [Unit 2](docs/unit-2-grounding-with-bing.md) | Grounding with Bing | Add web knowledge so the agent can research clients and regulations |
-| [Unit 3](docs/unit-3-knowledge-grounding-files.md) | Knowledge Grounding | Ground your agent with firm policy documents |
-| [Unit 4](docs/unit-4-knowledge-bases.md) | Knowledge Bases | Build knowledge bases with multiple sources |
-| [Unit 5](docs/unit-5-instructions-and-flow.md) | Instructions & Flow | Craft structured onboarding prompts and conversational design |
-| [Unit 6](docs/unit-6-content-understanding.md) | Content Understanding | Extract fields from proposals and classify documents |
-| [Unit 7](docs/unit-7-mcp-tools.md) | MCP Tools & Actions | Control the onboarding tracker via agent tool calls |
-| [Unit 8](docs/unit-8-workflow-agents.md) | Workflow Agents | Build multi-step onboarding workflows |
-| [Unit 9](docs/unit-9-safety-and-governance.md) | Safety & Governance | Apply responsible AI patterns and safety controls |
-| [Unit 10](docs/unit-10-evaluation-and-observability.md) | Evaluation & Observability | Trace agent reasoning and evaluate quality |
+| [Unit 3](docs/unit-3-knowledge-grounding-files.md) | Knowledge Grounding | Ground your agent with firm policy documents (all five sample assets) |
+| [Unit 4](docs/unit-4-instructions-and-flow.md) | Instructions & Flow | Craft structured intake prompts and guided conversational design |
+| [Unit 5](docs/unit-5-mcp-tools.md) | MCP Tools & Actions | Connect to the onboarding tracker and take real actions via MCP |
+| [Unit 6](docs/unit-6-workflow-agents.md) | Workflow Agents | Build multi-step pipelines with human approval and controlled flow |
+| [Unit 7](docs/unit-7-safety-governance.md) | Safety & Governance | Content safety filters, PII detection, and compliance guardrails |
+| [Unit 8](docs/unit-8-eval-observability.md) | Evaluation & Observability | Trace agent reasoning, measure quality, and monitor production behavior |
 
 ## Prerequisites
 
@@ -47,7 +45,7 @@ azd auth login
 azd up
 ```
 
-This provisions all Azure resources (App Service, Foundry, Grounding with Bing, Azure AI Search) and deploys the onboarding tracker application.
+This provisions all Azure resources (App Service, Foundry, Grounding with Bing) and deploys the onboarding tracker application.
 
 > **Note:** The deployment automatically grants the deployer the **Azure AI User** role on the Foundry resource. If a different user needs Foundry access, pass their principal ID during deployment:
 > ```bash
@@ -98,7 +96,7 @@ foundry-agents-essentials/
 │   ├── backend/            # Python FastAPI + MCP server
 │   └── frontend/           # React onboarding tracker UI
 └── docs/                   # Lab unit guides
-    └── sample-documents/   # Sample firm documents for lab exercises
+    └── assets/             # Sample firm documents for lab exercises
 ```
 
 ## Local Development
@@ -139,12 +137,15 @@ The onboarding MCP server (at `/mcp`) exposes these tools:
 
 ## Sample Documents
 
-The `docs/sample-documents/` folder contains files used during the lab exercises:
+The `docs/assets/` folder contains files used during the lab exercises:
 
 | Document | Used In | Description |
 |----------|---------|-------------|
-| `firm-onboarding-handbook.md` | Unit 3 | Firm policies and procedures for client onboarding |
-| `sample-proposal.md` | Unit 6 | A sample client proposal for field extraction exercises |
+| `firm-onboarding-handbook.md` | Unit 3 | Firm policies and procedures for client and matter onboarding |
+| `sample-proposal.pdf` | Unit 3 | A sample client engagement proposal (MCO matter) |
+| `conflict-of-interest-policy.pdf` | Unit 3 | Conflict screening procedures and ethical walls |
+| `client-retainer-agreement-template.docx` | Unit 3 | Standard retainer agreement with fee structures and terms |
+| `data-retention-policy.md` | Unit 3 | Data retention schedules, legal holds, and destruction procedures |
 
 ## Redeployment
 

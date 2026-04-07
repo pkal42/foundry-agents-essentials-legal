@@ -46,15 +46,6 @@ module bingGrounding 'modules/bing-grounding.bicep' = {
   }
 }
 
-module search 'modules/search.bicep' = {
-  name: 'search'
-  params: {
-    searchName: 'search-${resourceToken}'
-    location: location
-    tags: tags
-  }
-}
-
 module roleAssignments 'modules/role-assignments.bicep' = {
   name: 'role-assignments'
   params: {
@@ -78,5 +69,3 @@ output AZURE_WEBAPP_URL string = appService.outputs.webAppUrl
 output AZURE_FOUNDRY_NAME string = foundry.outputs.accountName
 output AZURE_FOUNDRY_ENDPOINT string = foundry.outputs.accountEndpoint
 output AZURE_BING_NAME string = bingGrounding.outputs.bingName
-output AZURE_SEARCH_NAME string = search.outputs.searchName
-output AZURE_SEARCH_ENDPOINT string = search.outputs.searchEndpoint

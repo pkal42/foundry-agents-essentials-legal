@@ -34,7 +34,7 @@ def create_onboarding(client_name: str, engagement_type: str, description: str, 
 
     Args:
         client_name: The name of the client company or individual.
-        engagement_type: The type of engagement (e.g., 'Litigation Support', 'Building Renovation', 'Strategy Advisory').
+        engagement_type: The type of engagement (e.g., 'Litigation', 'Corporate & Transactions', 'Regulatory Compliance').
         description: A brief description of the engagement scope.
         contact_email: Optional email address for the primary client contact.
     """
