@@ -89,7 +89,7 @@ Open [Unit 1](docs/unit-1-declarative-agent.md) and follow along!
 ## Project Structure
 
 ```
-foundry-agents-essentials/
+foundry-agents-essentials-legal/
 ├── azure.yaml              # Azure Developer CLI project config
 ├── infra/                  # Bicep infrastructure-as-code
 ├── src/app/
