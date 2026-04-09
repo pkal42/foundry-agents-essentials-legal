@@ -2,13 +2,13 @@
 
 ## Overview
 
-Welcome to Unit 6 of the **Foundry Agents Essentials** workshop! Up to this point, every agent you've built has been a **prompt agent** — a single agent that receives a user message, reasons about what to do, and responds. Prompt agents are powerful, but they have a fundamental limitation: **the AI decides the flow**. When your agent has access to Bing search, a knowledge base, MCP tools, and structured instructions, it *should* research the client, check firm policies, run a conflicts screening, and then create the onboarding record — in that order. But it *might not*. It might skip the research. It might create the record before checking conflicts. It might do everything right for one user and something different for the next.
+Welcome to Unit 6 of the **Foundry Agents Essentials** workshop! Up to this point, every agent you've built has been a **prompt agent** — a single agent that receives a user message, reasons about what to do, and responds. Prompt agents excel at open-ended conversations, flexible problem-solving, and tasks where the user drives the interaction.
 
-For legal firms, that's a problem. Client intake isn't a conversation — it's a **process**. There are mandatory steps that must happen in a specific order, every time, for every client. A conflicts check must complete before an engagement letter is drafted. A partner must approve before the matter becomes active. These aren't suggestions — they're requirements. You can't leave the sequence up to an AI's judgment.
+But some tasks aren't conversations — they're **processes**. For legal firms, client intake has mandatory steps that must happen in a specific order, every time, for every client. A conflicts check must complete before an engagement letter is drafted. A partner must approve before the matter becomes active. These aren't suggestions — they're requirements.
 
-**Workflow agents solve this.** Instead of giving one agent all the tools and hoping it follows the right sequence, you build a **workflow** — a visual, step-by-step pipeline where **you define the exact order of operations**. Each step runs a specialized agent (or a logic block, or a human approval gate), and the next step doesn't start until the previous one completes. The AI still powers the intelligence within each step, but **you control the flow between steps**.
+**Workflow agents** give you a different tool for this different purpose. Instead of giving one agent all the tools and relying on it to follow the right sequence, you build a **workflow** — a visual, step-by-step pipeline where **you define the exact order of operations**. Each step runs a specialized agent (or a logic block, or a human approval gate), and the next step doesn't start until the previous one completes. The AI still powers the intelligence within each step, but **you control the flow between steps**.
 
-This is the most important architectural shift in the workshop: moving from "the AI decides" to "I decide, and the AI executes."
+This is an important architectural concept in the workshop: prompt agents for flexibility, workflow agents for control.
 
 ---
 
@@ -27,18 +27,16 @@ Before starting this unit, make sure you have:
 
 Before we build anything, let's understand *why* workflow agents exist and when you need them.
 
-### The Problem with "Smart" Agents
+### When You Need Defined Processes
 
-Over the past six units, you've built a highly capable prompt agent. It can:
+Over the past five units, you've built a highly capable prompt agent. It can:
 
 - Research a prospective client using Bing (Unit 2)
 - Look up firm policies from uploaded documents (Unit 3)
 - Guide the user through a structured intake conversation (Unit 4)
 - Create onboarding records via MCP tools (Unit 5)
 
-That's impressive.But here's the catch: when a user says "I need to onboard Contoso Ltd as a new client," the agent decides on its own which of those capabilities to use and in what order. Sometimes it researches the client first. Sometimes it jumps straight to collecting intake details. Sometimes it checks firm policy. Sometimes it doesn't. The behavior is **probabilistic** — it varies based on how the user phrases the request, the conversation context, and the model's reasoning.
-
-For a marketing chatbot, that's fine. For legal client intake, it's not.
+That's impressive. But when a user says "I need to onboard Contoso Ltd as a new client," the agent decides on its own which of those capabilities to use and in what order. That flexibility is great for open-ended interactions, but for a **defined process** with mandatory steps, you want something more structured.
 
 ### What Legal Firms Actually Need
 
@@ -52,16 +50,16 @@ Legal client intake follows a defined process — the five-stage onboarding life
 | **4. Approval** | Partner reviews and approves | ❌ Never |
 | **5. Activation** | Create the matter record in the system | ❌ Never |
 
-Every step must happen. Every step must happen in order. A prompt agent *might* follow this sequence, but it *can't guarantee it*. A workflow agent **does guarantee it** — because you build the sequence yourself.
+Every step must happen. Every step must happen in order. A prompt agent is flexible by design — it adapts to the conversation. A workflow agent is **deterministic by design** — you build the sequence yourself, and it runs the same way every time.
 
 ### The Key Difference
 
 | | Prompt Agent | Workflow Agent |
 |---|---|---|
 | **Who controls the flow?** | The AI decides which tools to call and in what order | You define the exact sequence of steps |
-| **Can steps be skipped?** | Yes — the AI may skip steps based on its reasoning | No — every step runs, in order |
-| **Consistency** | Varies per conversation | Same process every time |
-| **Human approval** | Not built in — the AI can't pause and wait for a human | Built in — workflow pauses at approval gates |
+| **Step sequence** | Flexible — adapts to the conversation | Fixed — every step runs, in order |
+| **Consistency** | Adaptive per conversation | Same process every time |
+| **Human approval** | Not a built-in concept | Built in — workflow pauses at approval gates |
 | **Auditability** | Hard to verify what happened | Each step logs its input and output |
 | **Best for** | Open-ended Q&A, research, exploration | Defined processes with mandatory steps |
 
@@ -138,10 +136,15 @@ This is the fundamental shift: **you are the architect of the process, not the A
 Let's start by opening the workflow builder in the Foundry portal.
 
 1. Go to the [Microsoft Foundry portal](https://ai.azure.com) and open your **onboarding-lab** project
-2. In the left navigation pane, click on **Build**, then select **Agents**, then the **Workflows** tab
-3. Click **Create workflow**
-4. You'll see workflow template options. Select **Sequential** — this creates a linear, step-by-step workflow where each step runs after the previous one completes. You should now see the Visualizer display of the workflow with three agent cards and a sequential flow created with Start and the Agent cards.
-5. Click **Save** and give your workflow a name: `client-intake-workflow`
+2. On the upper-right menu, select **Build**, then select **Agents** on the left menu, and then select the **Workflows** tab under Agents.
+3. Click **Create workflow**. You'll see workflow template options. Select **Sequential** — this creates a linear, step-by-step workflow where each step runs after the previous one completes. You should now see the Visualizer display of the workflow with three agent cards and a sequential flow created with Start and the Agent cards.
+4. Click **+** between the Start and the first Agent card to add a new step **Set variable**. Select **Set Variable** node, and select **Edit** and configure variables that the workflow will use to pass data between steps. Add the following variables with leaving **To value** as is for now (you'll set them in the agent steps later):
+   - `Local.intake_details` — The structured output from Step 1 (client name, matter type, scope, etc.)
+   - `Local.research_brief` — The due diligence findings from Step 2
+   - `Local.compliance_summary` — The review outcome and executive summary from Step 3
+   - `Local.approval_decision` — The partner's approve/reject decision from Step 4
+4. Click **Done** to save the variable configuration and return to the canvas. You should now see the Start → Set Variable → Agent flow on the canvas.
+4. Delete the sticky notes and Click **Save** and give your workflow a name: `client-intake-workflow`
 
 > **📝 Note:** The sequential template is the right choice for client intake because every step depends on the previous step's output. Foundry also offers **Group Chat** workflows (multiple agents collaborate in a conversation) and **Human-in-the-loop** templates. You'll add a human approval step within the sequential flow.
 
@@ -151,30 +154,31 @@ Let's start by opening the workflow builder in the Foundry portal.
 
 The first step in the workflow collects client details. You'll create a specialized prompt agent for this — simpler and more focused than your all-in-one onboarding-agent.
 
-1. On the workflow canvas, click the **+** button to add a new step
-2. Select **Agent** as the step type
-3. Choose **Create new agent** (or select an existing agent if you prefer)
-4. Name it: `intake-collector`
-5. Set the model to your deployed model (e.g., `gpt-4.1`)
-6. Add the following instructions:
+1. Select the first **Agent** card on the workflow canvas or Add another **Agent** step to the workflow canvas if missing (click **+** after the Set variables step), 
+2. Select **Edit** from the menu, Agent Builder will open.
+3. In the **Select an agent** drop down, select **Create a new agent**, Name it: `intake-collector`
+4. Set the model to your deployed model (e.g., `gpt-4.1`)
+5. Under the **Input** section, make sure the agent's input is mapped to the workflow trigger's user message (e.g., `${trigger.input}` or the start node's output variable). If this mapping is missing or points to an empty variable, the agent will fail with an `InvokeAzureAgent` error.
+5. Add the following instructions:
 
 ```
 ## Role
-You are a client intake collector for Meridian Legal. Your ONLY job is to gather
-the required information for a new client engagement.
+You are the intake collector for Meridian Legal's onboarding workflow. Gather all required details for a new client engagement through a brief, focused conversation.
+
+## Scope
+ONLY collect intake information. Do not research the client, check firm policies, or create any records — those happen in later workflow steps.
 
 ## Required Fields
-Collect ALL of the following before completing your task:
+Collect each of the following. Ask one or two questions at a time:
 1. Client name (legal entity or individual)
 2. Primary contact name and email
-3. Matter type (Litigation, Corporate & Transactions, Regulatory Compliance,
-   Employment Law, or Intellectual Property)
-4. Brief description of the engagement scope (2-3 sentences)
-5. Estimated engagement value (if known)
-6. Any known conflicts or prior relationships with this client
+3. Matter type (Legal Advisory, Litigation, Corporate & Transactions, Regulatory Compliance, Employment Law, or Intellectual Property)
+4. Brief description of the engagement scope (2–3 sentences)
+5. Estimated engagement value
+6. Any known prior relationships or potential conflicts with this client
 
 ## Output Format
-When you have all required fields, output a structured summary using this exact format:
+Once all fields are collected, output a structured summary in this exact format:
 
 CLIENT: [name]
 CONTACT: [name, email]
@@ -182,15 +186,11 @@ MATTER TYPE: [type]
 SCOPE: [description]
 ESTIMATED VALUE: [value or "Not provided"]
 PRIOR RELATIONSHIP: [yes/no and details]
-
-## Rules
-- Do NOT research the client — that happens in a later step.
-- Do NOT check firm policies — that happens in a later step.
-- Do NOT create any records — that happens in a later step.
-- Focus ONLY on collecting complete, accurate intake information.
 ```
 
-7. Do not add any tools (Bing, knowledge bases, or MCP) to this agent — it only needs to collect information through conversation
+6. Do not add any tools (Bing, knowledge bases, or MCP) to this agent — it only needs to collect information through conversation
+7. Still in **Node settings**, select the **Save agent output message as** and select `Local.intake_details` (this is how the workflow will pass the collected information to the next step)
+8. Click **Done** to save the agent and return to the workflow canvas
 
 Notice how different these instructions are from the all-in-one onboarding-agent. This agent has one job. It can't research, it can't check policies, it can't create records. That's not a limitation — it's the whole point. **Each agent in a workflow does one thing well. The workflow handles the rest.**
 
@@ -202,41 +202,41 @@ Notice how different these instructions are from the all-in-one onboarding-agent
 
 The second step researches the client for background, recent news, and potential risks. This is the due diligence step of the onboarding lifecycle.
 
-1. Add another **Agent** step to the workflow canvas (click **+** after the intake-collector step)
-2. Create a new agent named: `client-researcher`
-3. Set the model to your deployed model
-4. Add the following instructions:
+1. Select the second **Agent** card on the workflow canvas or Add another **Agent** step to the workflow canvas if missing (click **+** after the intake-collector step). 
+2. Select **Edit** from the menu, Agent Builder will open.
+3. In the **Select an agent** drop down, select **Create a new agent**, Name it: `client-researcher`
+4. Set the model to your deployed model (e.g., `gpt-4.1`)
+5. Add the following instructions:
 
 ```
 ## Role
-You are a client due diligence researcher for Meridian Legal. You receive
-intake details from the previous step and research the client.
+You are the due diligence researcher for Meridian Legal's onboarding workflow. You receive intake details from the previous step and research the prospective client.
+
+## Scope
+ONLY perform client research using web search. Do not check firm policies, make engagement recommendations, or create any records.
 
 ## Tasks
-Using the client information provided:
-1. Search for the client company's background — what they do, their size,
-   and their industry
-2. Find any recent news, press releases, or developments about the client
+Using the client name and matter details provided:
+1. Search for the client's background — what they do, size, and industry
+2. Find recent news, press releases, or significant developments
 3. Identify any regulatory actions, lawsuits, or legal issues involving the client
-4. Note any reputational risks or red flags
+4. Assess reputational risk based on your findings
 
 ## Output Format
-Provide a structured research brief:
+COMPANY OVERVIEW: [2–3 sentences]
+RECENT DEVELOPMENTS: [bullet points of relevant news, or "None found"]
+LEGAL/REGULATORY HISTORY: [known issues, or "No issues found"]
+RISK ASSESSMENT: [Low / Medium / High — with brief justification]
 
-COMPANY OVERVIEW: [2-3 sentences]
-RECENT DEVELOPMENTS: [bullet points of relevant news]
-LEGAL/REGULATORY HISTORY: [any known issues or "No issues found"]
-RISK ASSESSMENT: [Low / Medium / High with brief justification]
-
-## Rules
-- Base your research on verifiable information from web searches.
-- If you cannot find information about the client, state that clearly.
-- Do NOT make recommendations about whether to accept the engagement.
-- Do NOT create any records or check firm policies.
+## Example
+If you find no concerning information:
+RISK ASSESSMENT: Low — No regulatory actions, lawsuits, or negative press identified. Client appears to be an established company with a clean public record.
 ```
 
-5. Add **Bing Grounding** as a tool for this agent — it needs web search to do its job
-6. Do NOT add knowledge bases or MCP tools
+6. Add **Bing Grounding** as a tool for this agent — it needs web search to do its job
+7. Do NOT add knowledge bases or MCP tools
+8. Select the **Node settings** tab in the Agent Builder, select the **Input message as** and select `Local.intake_details` and select the **Save agent output message as** and select `Local.research_brief`(this is how the workflow will pass the collected information to the next step)
+9. Click **Done** to save the agent and return to the workflow canvas
 
 **This is the power of workflows**: the Research Agent has Bing grounding, but the Intake Agent doesn't. Each agent gets exactly the tools it needs — nothing more. In a prompt agent approach, one agent has all the tools and the AI decides which to use. In a workflow, **you decide which tools each step can access.**
 
@@ -246,46 +246,43 @@ RISK ASSESSMENT: [Low / Medium / High with brief justification]
 
 The third step checks the intake against firm policies and generates a partner-ready summary. This is where the knowledge from Unit 3 comes in.
 
-1. Add another **Agent** step to the workflow canvas
-2. Create a new agent named: `compliance-reviewer`
-3. Set the model to your deployed model
-4. Add the following instructions:
+1. Select the third **Agent** card on the workflow canvas or Add another **Agent** step to the workflow canvas if missing (click **+** after the client-researcher step). 
+2. Select **Edit** from the menu, Agent Builder will open.
+3. In the **Select an agent** drop down, select **Create a new agent**, Name it: `compliance-reviewer`
+4. Set the model to your deployed model (e.g., `gpt-4.1`)
+5. Add the following instructions:
 
 ```
 ## Role
-You are a compliance reviewer for Meridian Legal. You receive client intake
-details and a research brief from previous steps. Your job is to review
-everything against firm policies and prepare a summary for partner approval.
+You are the compliance reviewer for Meridian Legal's onboarding workflow. You receive the intake details and research brief from previous steps. Your job is to check everything against firm policies and prepare a summary for partner approval.
+
+## Scope
+ONLY review compliance and prepare the summary. Do not approve the engagement (that is the partner's decision) and do not create any records.
 
 ## Tasks
 1. Check the engagement against the firm's onboarding handbook:
-   - Does the engagement type match a recognized practice area?
-   - Does the estimated value meet the minimum threshold for this practice area?
+   - Does the matter type match a recognized practice area?
+   - Is the estimated value above the minimum engagement threshold?
    - Are all required intake fields complete?
-2. Identify any compliance concerns:
-   - Prior relationships that need conflicts verification
-   - Regulatory sensitivity requiring additional review
-   - Engagement value thresholds that require Practice Director vs Managing
-     Partner approval
-3. Generate a partner-ready executive summary combining the intake details,
-   research findings, and compliance assessment
+2. Determine the required approval level based on engagement value:
+   - Under $25,000 → Practice Director
+   - $25,000–$100,000 → Practice Director
+   - $100,000–$500,000 → Managing Partner
+   - Over $500,000 → Executive Committee
+3. Flag any compliance concerns (prior relationships, regulatory sensitivity, missing information)
+4. Write a concise executive summary for the approving partner
 
 ## Output Format
 COMPLIANCE STATUS: [Pass / Needs Review / Fail]
-ISSUES FOUND: [list any issues, or "None"]
-APPROVAL LEVEL REQUIRED: [Practice Director / Managing Partner]
-EXECUTIVE SUMMARY: [3-4 sentence brief for the approving partner, covering
-who the client is, what they need, the research findings, and any concerns]
-
-## Rules
-- Reference specific policies from the firm handbook when flagging issues.
-- Be conservative — flag anything that MIGHT need attention.
-- Do NOT approve the engagement — that's the partner's decision.
-- Do NOT create any records.
+ISSUES FOUND: [list issues, or "None"]
+APPROVAL LEVEL REQUIRED: [Practice Director / Managing Partner / Executive Committee]
+EXECUTIVE SUMMARY: [3–4 sentences covering who the client is, what they need, research highlights, and any concerns]
 ```
 
-5. Add your **file-based knowledge** as a tool (the firm documents you uploaded in Unit 3)
-6. Do NOT add Bing or MCP tools
+6. Under **Tools** section, click **Upload Files**, upload documents under assets folder (the firm documents you uploaded in Unit 3)
+7. Do NOT add Bing or MCP tools
+8. Select the **Node settings** tab in the Agent Builder, select the **Input message as** and select `Local.research_brief` and select the **Save agent output message as** and select `Local.compliance_summary`(this is how the workflow will pass the collected information to the next step)
+9. Click **Done** to save the agent and return to the workflow canvas
 
 Again, this agent has exactly one capability: checking firm policies via the knowledge base. It can't search the web (that already happened in Step 2) and it can't create records (that happens in Step 5). **The workflow ensures each step stays in its lane.**
 
@@ -293,16 +290,18 @@ Again, this agent has exactly one capability: checking firm policies via the kno
 
 ### Step 5: Add a Human Approval Gate (Step 4 of the Workflow)
 
-This is the step that no prompt agent can replicate. The workflow **pauses** and waits for a human to review the summary and make a decision.
+This is the step that highlights a key workflow advantage. The workflow **pauses** and waits for a human to review the summary and make a decision — something that's natural in a workflow but not built into a prompt agent's conversation model.
 
 1. Add a **Ask a question** step to the workflow canvas (this is a built-in step type, not an agent)
 2. Configure the step:
-   - **Prompt to reviewer:** Display the compliance-reviewer's output (the executive summary, compliance status, and any flagged issues) and ask the partner to approve or reject
-   - **Input options:** The reviewer should be able to provide approval ("Approved" or "Rejected") and optional comments
+   - **Question** Display the compliance-reviewer's output (the executive summary, compliance status, and any flagged issues) and ask the partner to approve or reject. For example: The client intake compliance summary:
+{Local.compliance_summary} Please provide approval and optional comments- Approved, or Rejected.
+   - **Save user response as** Local.approval_decision
+3. Click **Done** to save and return to the canvas
 
 When the workflow reaches this step, it **stops and waits**. No timer, no timeout, no AI making the decision. A real person — the approving partner — reviews the executive summary from Step 3, sees the research findings from Step 2, and makes a judgment call. Only when they respond does the workflow continue.
 
-**This is why workflows exist for legal firms.** No matter how good the AI is at research, policy checking, and summarization, the approval decision must be made by a human. A prompt agent can't pause mid-conversation and wait for a partner in a different time zone to review the matter. A workflow can.
+**This is a key reason workflows exist for legal firms.** No matter how good the AI is at research, policy checking, and summarization, the approval decision must be made by a human. Workflows make this a first-class concept — the process pauses, waits for a real person to review and decide, and only then continues.
 
 > **📝 Note:** In a production deployment, you'd configure notifications (email or Teams) to alert the reviewing partner when an approval is waiting. For this workshop, you'll trigger the approval manually during testing.
 
@@ -312,31 +311,32 @@ When the workflow reaches this step, it **stops and waits**. No timer, no timeou
 
 The final step creates the onboarding record in the tracker — but only if the partner approved.
 
-1. Add another **Agent** step to the workflow canvas
+1. Add another **Agent** step to the workflow canvas, after the human approval step. Select **Edit** from the menu, Agent Builder will open.
 2. Create a new agent named: `record-creator`
 3. Set the model to your deployed model
 4. Add the following instructions:
 
 ```
 ## Role
-You are the record activation agent for Meridian Legal. You receive approved
-client intake details and create the official onboarding record.
+You are the record activation agent for Meridian Legal's onboarding workflow. You receive the approved intake details and create the official onboarding record in the tracker system.
+
+## Scope
+ONLY create records and add notes. Do not perform research or review compliance — those steps are already complete.
 
 ## Tasks
-1. Review the approval decision from the previous step
-2. If APPROVED: Use the create_onboarding tool to create the record using
-   the intake details collected in Step 1
-3. After creating the record, add a note documenting:
-   - The research summary from the due diligence step
-   - The compliance review outcome
-   - The approving partner's name and any comments
-4. If REJECTED: Do not create any record. Summarize the rejection reason.
+1. Check the approval decision from the previous step
+2. If APPROVED:
+   - Use create_onboarding with the client name, matter type, scope description, and contact email from the intake step
+   - Use add_note to document the research summary, compliance review outcome, and the approving partner's comments
+3. If REJECTED:
+   - Do NOT create any record
+   - Summarize the rejection reason
 
 ## Output Format
 If approved:
 RECORD CREATED: [onboarding ID]
-STATUS: Active
-NOTES ADDED: [confirmation]
+STATUS: Pending
+NOTES ADDED: [confirmation of what was documented]
 
 If rejected:
 RECORD NOT CREATED
@@ -345,6 +345,8 @@ REASON: [rejection reason from partner]
 
 5. Add **MCP tools** — connect to the onboarding tracker at your `AZURE_WEBAPP_URL/mcp` endpoint (the same MCP server from Unit 5)
 6. Do NOT add Bing or knowledge base — this agent only needs to create records
+7. Select the **Node settings** tab in the Agent Builder, select the **Input message as** and select `Local.approval_decision`.
+8. Click **Done** to save the agent and return to the workflow canvas
 
 This is the only agent in the workflow with write access to the onboarding tracker. The Intake Agent can't create records. The Research Agent can't create records. The Compliance Reviewer can't create records. Only the Activation Agent — running as the final step, after human approval — can write to the system.
 
@@ -359,15 +361,7 @@ Now that all five steps are on the canvas, let's wire them together.
 1. **Verify the sequence**: Make sure the steps are connected in order:
    - intake-collector → client-researcher → compliance-reviewer → partner-approval → record-creator
 
-2. **Configure variables**: Workflows use variables to pass data between steps. The key variables are:
-   - `intake_details` — The structured output from Step 1 (client name, matter type, scope, etc.)
-   - `research_brief` — The due diligence findings from Step 2
-   - `compliance_summary` — The review outcome and executive summary from Step 3
-   - `approval_decision` — The partner's approve/reject decision from Step 4
-
-3. **Set the trigger**: Configure the workflow to start with a **manual trigger** (for testing). The trigger input should accept the initial user message — such as "I need to onboard a new client"
-
-4. **Review the complete flow**: Step back and look at the entire canvas. You should see five connected steps forming a linear pipeline. Each step has:
+2. **Review the complete flow**: Step back and look at the entire canvas. You should see five connected steps forming a linear pipeline. Each step has:
    - A specialized agent (or human gate)
    - Specific tools assigned (not all tools)
    - Clear input/output variables
@@ -400,7 +394,7 @@ is around $200,000.
 
 4. After the workflow completes, open the **onboarding tracker dashboard** in your browser (`AZURE_WEBAPP_URL`). You should see the new Fabrikam Industries record — created through a five-step, human-approved workflow.
 
-**Now compare this to what would happen with a prompt agent:** You'd send the same message to your onboarding-agent from Unit 5, and it *might* research the client, *might* check policies, and *might* create the record — but you can't guarantee the sequence, you can't inject a human approval step, and you can't audit which steps actually ran. The workflow gives you all of that.
+**Now compare this to the prompt agent approach:** With the onboarding-agent from Unit 5, you'd send the same message and the agent would flexibly handle research, policy checking, and record creation in a single conversation. That works well for ad-hoc tasks. But the workflow gives you **guaranteed step ordering, a formal human approval gate, and a clear audit trail** of what each step produced — exactly what a regulated process requires.
 
 > **📝 Note:** Watch the workflow's execution timeline or step-by-step log in the portal. You can see exactly what each step produced, how long it took, and what data was passed to the next step. This auditability is critical for legal firms — you can demonstrate to compliance that every intake followed the same process.
 
@@ -434,20 +428,20 @@ This is exactly how it should work. The workflow caught the issue at Step 3, sur
 
 ## Summary
 
-🎉 **Congratulations — you've built your first workflow agent!** This is the most significant architectural upgrade in the workshop. You moved from a single prompt agent that makes its own decisions to a **multi-step, human-governed pipeline** where you control every aspect of the flow.
+🎉 **Congratulations — you've built your first workflow agent!**  You moved from a single prompt agent that makes its own decisions to a **multi-step, human-governed pipeline** where you control every aspect of the flow.
 
 | Unit | What You Added | Capability |
 |------|---------------|------------|
 | **Unit 1** | Declarative agent + instructions | Agent has a persona and can chat |
 | **Unit 2** | Grounding with Bing | Agent searches the web for current information |
 | **Unit 3** | File-based knowledge grounding | Agent answers from uploaded documents with citations |
-| **Unit 4** | Structured instructions + conversational flow | Agent guides users through a step-by-step intake process |
+| **Unit 4** | Structured instructions + conversational flow | Agent has scope boundaries, consistent personality, conversational patterns, and a structured intake workflow |
 | **Unit 5** | MCP tools + onboarding tracker | Agent creates records, updates status, and takes real actions |
 | **Unit 6** | Workflow agents | Multi-step pipeline with human approval and controlled flow |
 
 ### Key Takeaway
 
-The difference between a prompt agent and a workflow agent isn't intelligence — it's **control**. A prompt agent is like giving a smart associate all your files, tools, and instructions and saying "handle this." They'll probably do a great job, but you can't guarantee they'll follow every step, and you can't pause them mid-process for partner approval. A workflow agent is like creating a case management checklist where each step is handled by a specialist, the sequence is locked in, and nothing moves forward without the right sign-off. For legal firms, where process compliance isn't optional, workflows are how you move from AI demos to production systems.
+The difference between a prompt agent and a workflow agent isn't intelligence — it's **purpose**. A prompt agent is like a versatile associate who can handle any question you throw at them — flexible, adaptive, and great for open-ended work. A workflow agent is like a case management checklist where each step is handled by a specialist, the sequence is defined, and nothing moves forward without the right sign-off. Both are valuable. For legal firms, where many processes require defined steps and formal approvals, workflows are how you bring that structure to AI-powered automation.
 
 ### What's Next
 

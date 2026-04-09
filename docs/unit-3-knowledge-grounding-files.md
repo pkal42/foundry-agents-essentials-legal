@@ -152,7 +152,7 @@ Now let's give this knowledge to your onboarding-agent. You'll upload all five d
 
 Now that your agent has firm-specific documents, let's update its instructions so it **only answers firm-specific questions from its uploaded knowledge** — not from its general training data. This is critical for legal practice: you don't want the agent inventing policies or mixing generic advice with your firm's actual procedures.
 
-At the same time, the agent still has Bing grounding from Unit 2. We want to preserve that — external lookups for regulations, court filings, and public information are valuable. The guardrail is specifically about **firm-internal questions**.
+At the same time, the agent still has Bing grounding from Unit 2. We want to preserve that — external lookups for regulations, court filings, and public information are valuable. The boundary we're setting is specifically about **firm-internal questions**.
 
 1. In the Foundry portal, open the **onboarding-agent** configuration.
 2. In the **Instructions** field, replace the existing instructions with:
@@ -169,7 +169,7 @@ At the same time, the agent still has Bing grounding from Unit 2. We want to pre
 
 3. **Save** your agent configuration.
 
-> **💡 Tip:** Notice the guardrail is scoped to **firm-internal questions** — not all questions. This preserves the Bing grounding from Unit 2 for external lookups (regulations, filings, public records) while ensuring the agent never fabricates firm policies. For legal work, this distinction matters: you want the agent to say "I don't have that in our documents" rather than making up a retention schedule, but you still want it to look up current Oregon filing deadlines.
+> **💡 Tip:** Notice the boundary is scoped to **firm-internal questions** — not all questions. This preserves the Bing grounding from Unit 2 for external lookups (regulations, filings, public records) while ensuring the agent never fabricates firm policies. For legal work, this distinction matters: you want the agent to say "I don't have that in our documents" rather than making up a retention schedule, but you still want it to look up current Oregon filing deadlines.
 
 ---
 
@@ -289,7 +289,7 @@ This is where having **multiple documents** really shines. Let's test your agent
    What are the standard payment terms for client invoices and what happens with late payments?
    ```
 
-   The agent should cite the retainer agreement template: invoices are due **Net 30 days**, late payments accrue interest at **1.5% per month**, and expenses exceeding $2,500/month require prior client approval.
+   The agent should cite the retainer agreement template: invoices are due **Net 30 days**, late payments accrue interest at **1.5% per month**.
 
 7. Try the full approval workflow:
 

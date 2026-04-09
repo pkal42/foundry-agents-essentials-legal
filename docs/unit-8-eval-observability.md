@@ -261,7 +261,7 @@ The real power of evaluation isn't a single run — it's the **workflow** you bu
 | **Unit 1** | Declarative agent + instructions | Agent has a persona and can chat |
 | **Unit 2** | Grounding with Bing | Agent searches the web for current information |
 | **Unit 3** | File-based knowledge grounding | Agent answers from uploaded documents with citations |
-| **Unit 4** | Structured instructions + conversational flow | Agent guides users through a step-by-step intake process |
+| **Unit 4** | Structured instructions + conversational flow | Agent has scope boundaries, consistent personality, conversational patterns, and a structured intake workflow |
 | **Unit 5** | MCP tools + onboarding tracker | Agent creates records, updates status, and takes real actions |
 | **Unit 6** | Workflow agents | Multi-step pipeline with human approval and controlled flow |
 | **Unit 7** | Safety & governance | Content filters, PII protection, and responsible AI guardrails |

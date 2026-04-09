@@ -124,7 +124,7 @@ Time to see the difference Bing Grounding makes! Let's test with questions that 
 5. Compare this to Unit 1. Remember when you asked about specific policies and the agent gave generic answers? Try this:
 
    ```
-   What are the key compliance considerations when onboarding a litigation client in Portland, Oregon?
+   What are the recent key compliance considerations when onboarding a litigation client in Portland, Oregon?
    ```
 
    Now the agent can actually research and provide **current, location-specific regulatory information** rather than guessing.

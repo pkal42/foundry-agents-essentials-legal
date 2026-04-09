@@ -2,7 +2,7 @@
 
 ## Overview
 
-Welcome to Unit 5 of the **Foundry Agents Essentials** workshop — and the moment everything comes together! Over the past four units, you've built an increasingly capable agent: it has a professional persona (Unit 1), can search the web (Unit 2), knows your firm's policies (Unit 3), and guides users through a structured intake conversation (Unit 4). But so far, your agent has only been able to *talk* — it generates text, answers questions, and walks users through processes, yet it can't actually *do* anything in the real world.
+Welcome to Unit 5 of the **Foundry Agents Essentials** workshop — and the moment everything comes together! Over the past four units, you've built an increasingly capable agent: it has a professional persona (Unit 1), can search the web (Unit 2), knows your firm's policies (Unit 3), and has polished instructions with scope boundaries, conversational flow patterns, and a structured intake workflow (Unit 4). But so far, your agent has only been able to *talk* — it generates text, answers questions, and walks users through processes, yet it can't actually *do* anything in the real world.
 
 That changes now. In this unit, you'll connect your onboarding-agent to a **live client onboarding tracker** application using the **Model Context Protocol (MCP)**. Once connected, the agent will be able to create new client onboarding records, update matter statuses, and add compliance notes — all by calling real API endpoints on a running application. You'll watch the agent take an action in the Foundry playground and then see the result appear in a live web dashboard, in real time.
 
@@ -14,13 +14,13 @@ For legal firms, this is where AI agents translate intelligence into action acro
 
 Before starting this unit, make sure you have:
 
-- ✅ Completed [Unit 4: Instructions & Conversational Flow](./unit-4-instructions-and-flow.md)
+- ✅ Completed [Unit 4: Crafting Instructions & Conversational Flow](./unit-4-instructions-and-flow.md)
 - ✅ Your **onboarding-agent** is working in the Foundry playground with all prior capabilities configured (Bing grounding, file-based knowledge grounding, structured intake instructions)
 - ✅ Infrastructure deployed via `azd up` (this deploys the onboarding tracker web app to Azure App Service)
-- ✅ The onboarding tracker web app is running and accessible at your `AZURE_WEBAPP_URL`
+- ✅ The onboarding tracker web app is running and accessible (you'll find the URL in the Azure Portal)
 - ✅ Access to the [Microsoft Foundry portal](https://ai.azure.com)
 
-> **📝 Note:** Your `AZURE_WEBAPP_URL` was output when you ran `azd up`. To find it again, run `azd env get-values` from the repository root and look for `AZURE_WEBAPP_URL`. You can also find the URL in the [Azure Portal](https://portal.azure.com) by navigating to your resource group and selecting the App Service resource.
+> **📝 Note:** You can find your web app URL in the [Azure Portal](https://portal.azure.com): navigate to your resource group → select the **App Service** resource → on the Overview page, the URL is shown under **Default domain** (e.g., `https://app-xxxx.azurewebsites.net`).
 
 ---
 
@@ -76,11 +76,10 @@ MCP provides the universal adapter. Build one MCP server for each system, and yo
 
 Before connecting the agent, let's see the application it will be interacting with.
 
-1. Find your `AZURE_WEBAPP_URL`. If you don't have it handy, run the following from the repository root:
-
-   ```bash
-   azd env get-values | findstr AZURE_WEBAPP_URL
-   ```
+1. Find your web app URL in the [Azure Portal](https://portal.azure.com):
+   - Navigate to your **resource group**
+   - Select the **App Service** resource
+   - On the **Overview** page, copy the URL shown under **Default domain** (e.g., `https://app-xxxx.azurewebsites.net`)
 
 2. Open the URL in your browser. You should see the **Client Onboarding Tracker** — a React dashboard with:
    - **Status cards** at the top showing counts by status (pending, in-review, approved, etc.)
@@ -116,9 +115,9 @@ Now let's connect your onboarding-agent to the tracker's MCP server.
 5. Click **Add** to add a new tool.
 6. Select **Custom** and then **MCP**.
 7. Configure the MCP connection:
-   - **Server URL:** `{AZURE_WEBAPP_URL}/mcp` — replace `{AZURE_WEBAPP_URL}` with your actual URL (e.g., `https://app-xxxx.azurewebsites.net/mcp`)
+   - **Server URL:** `https://app-xxxx.azurewebsites.net/mcp` — replace with your actual App Service URL from the Azure Portal, appending `/mcp`
    - **Authentication:** Unauthenticated
-   - **Name:** `Onboarding-Tracker`
+   - **Name:** `onboarding-tracker`
 8. Click **Connect**. Foundry will register the MCP server connection. The agent discovers tools at runtime — you may not see individual tools listed in the configuration UI.
 9. Click **Save** to save your agent configuration.
 
@@ -271,7 +270,7 @@ This is the capstone of the entire workshop. You'll run a **complete guided inta
 
 > **💡 Tip:** This end-to-end flow demonstrates the full agent lifecycle: **knowledge** (the agent knows firm policies from the handbook) + **instructions** (the agent follows a structured intake process) + **tools** (the agent creates real records via MCP) = a complete, automated workflow. This is what production-ready AI agents look like.
 
-> **📝 Note:** The agent may word things slightly differently each time you run through this flow — that's the nature of language models. But the structured instructions ensure it always collects the same core information and follows the same logical sequence.
+> **📝 Note:** The agent may word things slightly differently each time you run through this flow — that's the nature of language models. Structured instructions improve consistency, but for scenarios where you need **guaranteed step sequences and deterministic flow control**, you'll use Workflow Agents in Unit 6.
 
 ---
 
@@ -316,7 +315,7 @@ Your agent now has four distinct capabilities: web search (Bing), firm knowledge
 | **Unit 1** | Declarative agent + instructions | Agent has a persona and can chat |
 | **Unit 2** | Grounding with Bing | Agent searches the web for current information |
 | **Unit 3** | File-based knowledge grounding | Agent answers from uploaded documents with citations |
-| **Unit 4** | Structured instructions + conversational flow | Agent guides users through a step-by-step intake process |
+| **Unit 4** | Structured instructions + conversational flow | Agent has scope boundaries, consistent personality, conversational patterns, and a structured intake workflow |
 | **Unit 5** | MCP tools + onboarding tracker | Agent creates records, updates status, and takes real actions |
 
 ### Key Takeaway
