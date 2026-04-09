@@ -27,53 +27,11 @@ Before starting this unit, make sure you have:
 
 ---
 
-## Why Instructions Matter More Than You Think
+## Why Instructions Matter
 
-The system prompt is your agent's **operating manual**. It's the single most important piece of configuration that determines *how* the agent behaves — its personality, its workflow, its boundaries, and the format of its responses.
+The system prompt is your agent's **operating manual**. Your current instructions from Unit 3 include the knowledge boundary and Bing distinction, but they're unstructured — no defined scope, no behavioral boundaries, no tone consistency, no workflow sequence, no output formatting, and no examples. A well-structured prompt solves all of these.
 
-Up to this point, your agent's instructions have been updated twice — first in Unit 1 (basic prompt) and then in Unit 3 (knowledge-only boundary). Your current instructions look something like this:
-
-**Current instructions (from Unit 3):**
-```
-You are a Client Onboarding Agent for Meridian Legal. You help team members onboard new
-clients and matters by answering questions about intake procedures, firm policies, and
-engagement requirements.
-
-**Important:** For any question about firm policies, procedures, or internal processes,
-only use information from the uploaded firm documents. Do not rely on your general training
-knowledge for firm-specific answers. If the answer is not found in the provided documents,
-say so clearly — do not guess or fill in with generic advice. Always cite which document
-or section your answer comes from.
-
-You may still use Bing search to look up external information such as current regulations,
-public filings, court rules, or industry standards.
-
-When a user asks about onboarding a new client, help them gather the key details: client
-name, matter type, a brief scope description, and primary contact information. Be
-professional, thorough, and concise.
-```
-
-These instructions are better than Unit 1's original prompt — they include the knowledge boundary and Bing distinction. But they're still **unstructured**. Here's what's missing:
-
-| Problem | Example |
-|---|---|
-| **No defined scope** | Ask "Write me a poem about corporate law" and the agent happily obliges — even though that has nothing to do with client intake |
-| **No behavioral boundaries** | The agent might offer legal opinions, skip mandatory steps, or guess about firm policy |
-| **No tone consistency** | Sometimes the agent is chatty, sometimes terse — there's no defined personality |
-| **No conversational flow** | When the user says "hi" or asks something ambiguous, the agent gives a generic or inconsistent response |
-| **No workflow or sequence** | The agent has no step-by-step intake process — it gives a helpful but generic response |
-| **No output formatting** | Responses have no consistent structure — no checklists, no summaries, no labels |
-| **No examples** | The model has to guess what "good" behavior looks like for this specific agent |
-
-A well-structured system prompt solves all of these problems. It's the single most impactful thing you can do to improve your agent's quality — often more impactful than changing the underlying model.
-
-> **💡 Tip:** In production agent development, teams often spend more time refining instructions than they do on any other part of the agent. A good system prompt is the difference between a prototype and a product.
-
----
-
-## Anatomy of a Structured System Prompt
-
-Before we start writing, let's understand the building blocks. A well-designed system prompt for an agent typically includes these sections:
+A good system prompt typically includes these sections:
 
 ### 1. Role Definition (Persona)
 
@@ -99,7 +57,9 @@ How the agent should handle greetings, clarifications, multi-turn conversations,
 
 Concrete examples of ideal input/output pairs. These are the most powerful tool in your prompt engineering toolkit — they show the model *exactly* what you want, removing ambiguity. Five well-chosen examples are often worth more than fifty lines of written rules.
 
-> **📝 Note:** Not every agent needs all six sections. A simple FAQ bot might only need role definition and scope. But for a process-driven agent like our onboarding intake specialist — one that follows a workflow and will soon be connected to tools — all six sections are valuable.
+> **📝 Note:** Not every agent needs all six sections. A simple FAQ bot might only need role definition and scope.
+
+> **💡 Tip:** A good system prompt is often more impactful than changing the underlying model. Teams spend more time refining instructions than any other part of agent configuration.
 
 ---
 
@@ -262,7 +222,6 @@ Assistant: "That's an interesting topic! However, I'm focused specifically on cl
 User: "Hi!"
 Assistant: "Hello! I'm the Client Intake Specialist for Meridian Legal. I can help you onboard a new client or matter, answer questions about firm policies, or look up current regulations. What would you like to do today?"
 ```
-
 Let's break down why each section matters:
 
 - **Role** anchors the agent's identity. It's a *Client Intake Specialist*, not a generic assistant — this framing keeps responses focused on intake.
@@ -351,7 +310,7 @@ This tests the complete intake workflow from greeting to summary.
 3. Respond:
 
    ```
-   The client is Trey Research, contact is Sarah Chen at sarah@treyresearch.com. It's amlitigation case - wrongful termination claim — the client alleges discrimination based on age and disability in a recent layoff.
+   The client is Trey Research, contact is Sarah Chen at sarah@treyresearch.com. It's a litigation case - wrongful termination claim — the client alleges discrimination based on age and disability in a recent layoff.
    ```
 
    **Expected behavior:** The agent should acknowledge the details and move to the next step — asking about estimated engagement value, urgency level, and referral source.
@@ -410,51 +369,6 @@ Start a **new conversation** and test whether the agent properly declines to giv
 
 > **📝 Note:** Boundaries aren't about making the agent unhelpful — they're about keeping it within its role. The agent can still answer factual questions about firm policy; it just won't offer legal opinions or skip mandatory compliance steps.
 
-#### Conversation 4 — Test Knowledge Integration
-
-Start a **new conversation** and verify that the structured instructions work together with the file-based knowledge from Unit 3.
-
-1. Send:
-
-   ```
-   I'm onboarding a new corporate client, Northwind Traders, for a regulatory compliance matter. Estimated engagement value is $150,000. What approval level do we need, and what additional compliance checks apply?
-   ```
-
-   **Expected behavior:** The agent should:
-   - Reference the handbook: $100,000–$500,000 requires **Managing Partner** approval
-   - Note that for engagements exceeding $50,000, AML screening is required (sanctions list, PEP check, source of funds verification)
-   - Begin guiding the user through the intake workflow
-
-2. Follow up with:
-
-   ```
-   What are the current regulatory compliance trends we should be aware of for this type of engagement?
-   ```
-
-   **Expected behavior:** The agent should use **Bing Grounding** to search for current regulatory compliance information — demonstrating that the structured instructions don't interfere with the agent's existing knowledge sources.
-
-> **💡 Tip:** This is the power of layering — structured instructions control *behavior*, while knowledge sources (files and Bing) provide *information*. They work together, not in conflict.
-
-#### Conversation 5 — Test Document Checklist Formatting
-
-Start a **new conversation** and test the document checklist output format specifically.
-
-1. Send:
-
-   ```
-   We have a new corporate client, Northwind Traders, for a corporate transaction matter. NDA is signed but we're still waiting on their certificate of incorporation. We do have government ID for the primary contact and they've sent over the draft acquisition agreement.
-   ```
-
-   **Expected behavior:** The agent should display a formatted document checklist showing:
-   - ✅ Signed Non-Disclosure Agreement (NDA)
-   - ✅ Government-issued identification
-   - ❌ Certificate of incorporation — *pending*
-   - ✅ Relevant project documentation (draft acquisition agreement)
-
-   The agent should also note that the certificate of incorporation is required before the engagement can proceed to Due Diligence, and continue with the remaining intake steps.
-
-> **📝 Note:** The ✅/❌ formatting makes it immediately clear what's been collected and what's outstanding. For busy legal teams juggling multiple intakes, this visual clarity is invaluable.
-
 ---
 
 ### Step 5: Iterate and Refine
@@ -488,9 +402,7 @@ Prompt engineering is **iterative**. The structured prompt from Step 2 is a stro
    - **Tighten or loosen boundaries.** Add boundaries like "Do not discuss fees or pricing unless specifically asked" or loosen them to allow proactive suggestions.
    - **Add more few-shot examples.** Each example you add makes the model's behavior more predictable. Try adding examples for edge cases you encountered during testing.
 
-> **💡 Tip:** The best system prompts are born from testing, not from theory. Every time the agent does something unexpected, that's a signal to refine the instructions. Over time, your prompt will cover more and more edge cases — and the agent will feel increasingly polished.
-
-> **📝 Note:** There's no single "correct" prompt — what works best depends on your firm, your team, and your workflow. The structured format (role + scope + tone + workflow + boundaries + conversational flow + formatting + examples) is the framework; the content is yours to customize.
+> **💡 Tip:** The best system prompts are born from testing, not from theory. Every time the agent does something unexpected, refine the instructions.
 
 ---
 
@@ -507,16 +419,6 @@ Congratulations! 🎉 You've transformed your agent from a capable-but-rough pro
 
 The key insight from this unit: **knowledge without clear instructions produces unpredictable agents**. The knowledge sources you added in Units 2–3 gave the agent information. The structured instructions you added in this unit gave it **direction**.
 
-Your onboarding-agent now has:
-
-- 🤖 A **clear role definition** that anchors every response
-- 🚧 **Scope boundaries** that keep it focused and prevent off-topic drift
-- 🎭 A **consistent personality** that feels intentional and polished
-- 📋 **Behavioral boundaries** that enforce firm policy and prevent overstepping
-- 🔄 **Conversational flow patterns** for greetings, clarifications, and fallbacks
-- 📝 **Few-shot examples** that show the model exactly what you expect
-- 📊 **Output formatting** for consistent, auditable intake summaries
-
 ### What's Next
 
 In **[Unit 5: MCP Tools & Actions](./unit-5-mcp-tools.md)**, we'll connect the agent to the onboarding tracker application — giving it the ability to **create real matter records, update status, and add notes**. The agent will go from guiding intake to actually performing it.
@@ -525,26 +427,16 @@ In **[Unit 5: MCP Tools & Actions](./unit-5-mcp-tools.md)**, we'll connect the a
 
 ## Key Concepts
 
-Here's a quick reference of the key concepts covered in this unit:
+- **System Prompt Structure** — A well-designed system prompt is organized into sections: role, scope, tone, behavioral rules, conversational flow, and examples. Structure makes prompts easier to write, maintain, and debug.
 
-- **System Prompt Structure** — A well-designed system prompt is organized into clear sections: role definition, scope, tone, behavioral rules, conversational flow, and examples. Structure makes the prompt easier to write, maintain, and debug — compared to a single block of unformatted text.
+- **Scope Limitation** — Deliberately restricting what the agent will discuss. The SHOULD/SHOULD NOT pattern creates clear decision boundaries. An agent that does five things well is more useful than one that does a hundred things poorly.
 
-- **Scope Limitation** — Deliberately restricting what the agent will discuss or attempt. This feels counterintuitive (why limit a capable model?) but it dramatically improves quality. An agent that does five things well is more useful than one that does a hundred things poorly. The SHOULD/SHOULD NOT pattern creates clear decision boundaries.
+- **Behavioral Boundaries** — Explicit rules about what the agent must *not* do (e.g., giving legal advice, skipping conflicts checks). These are distinct from the platform-level Guardrails feature in Unit 7.
 
-- **Behavioral Boundaries** — Explicit rules in the agent's instructions about what it must *not* do. Boundaries prevent the agent from overstepping its role (e.g., giving legal advice), skipping mandatory steps (e.g., conflicts checks), or generating unreliable information (e.g., guessing about firm policy). These are distinct from the platform-level Guardrails feature covered in Unit 7, which provides content safety filtering.
+- **Few-Shot Prompting** — Concrete input/output examples in the system prompt. These demonstrate desired behavior unambiguously — the model learns from the pattern rather than interpreting written rules.
 
-- **Few-Shot Prompting** — Including concrete input/output examples in the system prompt. Few-shot examples are one of the most effective prompt engineering techniques because they demonstrate desired behavior unambiguously — the model learns from the pattern rather than interpreting written rules.
+- **Conversational Flow** — Predefined behaviors for greetings, clarifications, fallbacks, and endings. These patterns make the agent feel natural and predictable.
 
-- **Conversational Design Patterns** — Predefined behaviors for common conversation moments: greetings, clarifications, confirmations, fallbacks, and endings. These patterns make the agent feel natural and predictable, like a well-designed conversational UI.
+- **Graceful Degradation** — How the agent handles out-of-scope requests: acknowledge → explain → redirect. Instead of guessing, it directs users to what it *can* help with.
 
-- **Conversational Flow** — The step-by-step sequence the agent follows during multi-turn interactions. Instead of answering every question independently, the agent guides the user through a defined process — collecting information incrementally and moving through stages in order.
-
-- **Graceful Degradation** — How the agent handles requests it can't fulfill. Instead of hallucinating, guessing, or giving an error, a well-instructed agent acknowledges the request, explains its limitation, and redirects to something it *can* help with. The pattern is: acknowledge → explain → redirect.
-
-- **Agent Persona** — The identity and communication style defined in the instructions. A well-defined persona keeps the agent focused on its role and sets the right tone for interactions. For legal agents, this typically means professional, compliance-focused, and thorough.
-
-- **Output Formatting** — Instructions that control how the agent structures its responses — using checklists, tables, labels, and consistent layouts. Formatted output is easier for teams to review, compare across intakes, and act on.
-
-- **Prompt Engineering** — The practice of designing, testing, and iterating on agent instructions to achieve desired behavior. Prompt engineering is an ongoing process — you observe the agent's responses, identify gaps, adjust the instructions, and test again.
-
-> **💡 Tip:** The structured prompt you wrote in this unit is a template you can reuse for any agent you build. Change the role, scope, rules, and examples — but keep the structure. It works for chatbots, customer service agents, internal tools, and anything in between.
+- **Prompt Engineering** — The iterative practice of designing, testing, and refining agent instructions. Observe responses, identify gaps, adjust, test again.

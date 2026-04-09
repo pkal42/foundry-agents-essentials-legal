@@ -129,7 +129,7 @@ Now let's give this knowledge to your onboarding-agent. You'll upload all five d
 1. Open the [Microsoft Foundry portal](https://ai.azure.com) and navigate to your project.
 2. Select the **Build** tab on top-right. In the left-hand navigation, click on **Agents**.
 3. Select the **onboarding-agent** agent to open its configuration.
-4. Scroll down to the **Knowledge** section of the agent configuration.
+4. Scroll down to the **Tools** section of the agent configuration.
 5. Click **Add** and select **Files**.
 6. Foundry will prompt you to upload files:
    - Click **Upload files** and select **all five documents** from the `docs/assets/` folder in this repository:

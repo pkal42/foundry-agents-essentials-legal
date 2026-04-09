@@ -67,19 +67,7 @@ Every step must happen. Every step must happen in order. A prompt agent is flexi
 
 ### What About Multi-Agent Orchestration?
 
-There's a third pattern worth understanding: **agentic orchestration** — where a "manager" agent dynamically decides which specialist agents to call, routes tasks between them, and merges their results. Think of a triage agent that receives a legal inquiry, determines whether it's a litigation matter or a corporate transaction, and delegates to the right specialist agent autonomously.
-
-That pattern is powerful, but it's **not available through the portal**. Dynamic agent-to-agent delegation — where the AI decides the routing — requires pro-code using an orchestration framework such as the [Microsoft Agent Framework](https://github.com/microsoft/agent-framework), SDKs available for Python and .NET, or other multi-agent orchestration framework.
-
-Here's how the three approaches compare:
-
-| Pattern | Who controls the flow? | Built in portal? | When to use |
-|---------|----------------------|-------------------|-------------|
-| **Prompt Agent** (Units 1–6) | AI decides tool usage within one agent | ✅ Yes | Open-ended Q&A, research, exploration |
-| **Workflow Agent** (this unit) | You define the step sequence | ✅ Yes | Mandatory processes with fixed steps |
-| **Agentic Orchestration** | AI routes between multiple agents dynamically | ❌ Pro-code | Complex routing, triage, specialist delegation |
-
-For this use case, **workflow agents are the right fit** — legal intake is a defined process with mandatory steps, not a dynamic routing problem. But as your firm's AI maturity grows and you start building agents that need to triage across practice areas or dynamically assemble specialist teams, pro-code orchestration is the natural next step — and everything you've built in the portal carries forward.
+There's a third pattern: **agentic orchestration** — where a "manager" agent dynamically routes tasks between specialist agents. That pattern requires pro-code using an orchestration framework like the [Microsoft Agent Framework](https://github.com/microsoft/agent-framework). For legal intake — a defined process with mandatory steps — **workflow agents are the right fit**. Everything you build in the portal carries forward if you move to pro-code later.
 
 ---
 
@@ -143,8 +131,8 @@ Let's start by opening the workflow builder in the Foundry portal.
    - `Local.research_brief` — The due diligence findings from Step 2
    - `Local.compliance_summary` — The review outcome and executive summary from Step 3
    - `Local.approval_decision` — The partner's approve/reject decision from Step 4
-4. Click **Done** to save the variable configuration and return to the canvas. You should now see the Start → Set Variable → Agent flow on the canvas.
-4. Delete the sticky notes and Click **Save** and give your workflow a name: `client-intake-workflow`
+5. Click **Done** to save the variable configuration and return to the canvas. You should now see the Start → Set Variable → Agent flow on the canvas.
+6. Delete the sticky notes and Click **Save** and give your workflow a name: `client-intake-workflow`
 
 > **📝 Note:** The sequential template is the right choice for client intake because every step depends on the previous step's output. Foundry also offers **Group Chat** workflows (multiple agents collaborate in a conversation) and **Human-in-the-loop** templates. You'll add a human approval step within the sequential flow.
 
@@ -265,7 +253,7 @@ ONLY review compliance and prepare the summary. Do not approve the engagement (t
    - Is the estimated value above the minimum engagement threshold?
    - Are all required intake fields complete?
 2. Determine the required approval level based on engagement value:
-   - Under $25,000 → Practice Director
+   - Under $25,000 → Engagement Lead
    - $25,000–$100,000 → Practice Director
    - $100,000–$500,000 → Managing Partner
    - Over $500,000 → Executive Committee
@@ -343,7 +331,7 @@ RECORD NOT CREATED
 REASON: [rejection reason from partner]
 ```
 
-5. Add **MCP tools** — connect to the onboarding tracker at your `AZURE_WEBAPP_URL/mcp` endpoint (the same MCP server from Unit 5)
+5. Add **MCP tools** — connect to the onboarding tracker at your App Service URL with `/mcp` appended (the same MCP server from Unit 5, e.g., `https://app-xxxx.azurewebsites.net/mcp`)
 6. Do NOT add Bing or knowledge base — this agent only needs to create records
 7. Select the **Node settings** tab in the Agent Builder, select the **Input message as** and select `Local.approval_decision`.
 8. Click **Done** to save the agent and return to the workflow canvas
@@ -392,7 +380,7 @@ is around $200,000.
    - **Step 4 (Approval):** The workflow **pauses**. You see the executive summary and are prompted to approve or reject. Enter "Approved" to continue.
    - **Step 5 (Activation):** The record-creator uses the MCP tool to create the onboarding record and adds notes with the research and compliance summaries
 
-4. After the workflow completes, open the **onboarding tracker dashboard** in your browser (`AZURE_WEBAPP_URL`). You should see the new Fabrikam Industries record — created through a five-step, human-approved workflow.
+4. After the workflow completes, open the **onboarding tracker dashboard** in your browser (your App Service URL from the Azure Portal). You should see the new Fabrikam Industries record — created through a five-step, human-approved workflow.
 
 **Now compare this to the prompt agent approach:** With the onboarding-agent from Unit 5, you'd send the same message and the agent would flexibly handle research, policy checking, and record creation in a single conversation. That works well for ad-hoc tasks. But the workflow gives you **guaranteed step ordering, a formal human approval gate, and a clear audit trail** of what each step produced — exactly what a regulated process requires.
 
@@ -451,19 +439,17 @@ In **[Unit 7: Safety & Governance](./unit-7-safety-governance.md)**, you'll add 
 
 ## Key Concepts
 
-- **Workflow Agent** — A multi-step pipeline that executes a defined sequence of agents, logic blocks, and human gates. Unlike prompt agents where the AI controls the flow, workflow agents give **you** full control over the order of operations, which tools each step can access, and where human decisions are required.
+- **Workflow Agent** — A multi-step pipeline where you define the exact sequence of agents, logic blocks, and human gates. You control the order of operations and which tools each step can access.
 
-- **Sequential Workflow** — A workflow pattern where steps execute one after another in a fixed order. Each step's output becomes the next step's input. This is the right pattern for processes with mandatory steps that can't be skipped or reordered — like legal client intake.
+- **Sequential Workflow** — Steps execute one after another in a fixed order. Each step's output becomes the next step's input — the right pattern for processes with mandatory steps.
 
-- **Human-in-the-Loop** — A workflow step that pauses execution and waits for a human to provide input, make a decision, or approve an action. No AI reasoning happens during this step — it's a genuine decision point where a real person (like a reviewing partner) has full control.
+- **Human-in-the-Loop** — A workflow step that pauses execution and waits for a human to make a decision. No AI reasoning happens — it's a genuine decision point.
 
-- **Least-Privilege Per Step** — A governance pattern where each agent in a workflow receives only the tools it needs for its specific task. The Intake Agent has no tools (conversation only). The Research Agent has Bing (search only). The Activation Agent has MCP (write access). No single agent has access to everything, reducing risk and enforcing separation of concerns.
+- **Least-Privilege Per Step** — Each agent in a workflow gets only the tools it needs. The Intake Agent has no tools. The Research Agent has Bing. The Activation Agent has MCP. No single agent has access to everything.
 
-- **Prompt Agent vs. Workflow Agent** — Prompt agents are best for open-ended tasks where the AI's flexibility is an advantage (research, Q&A, exploration). Workflow agents are best for defined processes where consistency, auditability, and mandatory steps are requirements. Most production systems use both — workflows orchestrate the process, prompt agents handle the intelligence within each step.
+- **Variable Passing** — Data flows between workflow steps via variables (e.g., `intake_details`, `research_brief`). This creates a chain of context without any single agent holding the entire conversation history.
 
-- **Variable Passing** — The mechanism by which data flows between workflow steps. Each step produces output variables (e.g., `intake_details`, `research_brief`) that subsequent steps consume as input. This creates a chain of context through the pipeline without any single agent needing to hold the entire conversation history.
-
-- **Auditability** — The ability to review exactly what happened at each step of a workflow: what input it received, what the agent produced, how long it took, and what was passed forward. For legal firms, this creates a compliance trail showing that every intake followed the defined process — a requirement for many regulatory frameworks and client engagement standards.
+- **Auditability** — Each workflow step logs its input, output, and duration — creating a compliance trail showing every intake followed the defined process.
 
 > **💡 Tip:** Think about the processes at your firm that follow a fixed sequence: client intake, conflict checks, engagement approvals, document reviews, matter closings. Each of these is a candidate for a workflow agent. Start by mapping the steps on paper (or a whiteboard), identifying which steps need AI intelligence vs. human judgment, and then build the workflow in Foundry. The visual builder makes it straightforward to translate a process diagram into a working pipeline.
 
@@ -478,7 +464,3 @@ Everything in this unit was built through the Foundry portal — no code require
 | **Custom error handling** | Retry a failed Bing search, fall back to a different research source, or escalate to a human if an agent fails. Code gives you lifecycle hooks and recovery patterns for production resilience. |
 | **Agent-to-Agent communication** | Agents that talk to each other directly — enabling cross-system or even cross-firm agent collaboration using protocols like A2A. |
 | **Integration with CI/CD** | Version your agent definitions and orchestration logic in Git, deploy through a pipeline, and manage with the same DevOps practices your engineering team already uses. |
-
-The portal gets you from zero to working workflow — fast. An orchestration framework gets you to production-grade, enterprise-scale systems. For most legal intake scenarios, the portal is all you need. When you're ready to scale, the pro-code path is there.
-
-> **📝 Note:** Going pro-code doesn't mean starting over. Agents you created in the portal can be called from code through Foundry's Agent Service. The investment you make in building and tuning your prompt agents carries forward — you're just changing how they're coordinated.
