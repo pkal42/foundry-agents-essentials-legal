@@ -2,7 +2,7 @@
 
 ## Overview
 
-Welcome to Unit 5 of the **Foundry Agents Essentials** workshop — and the moment everything comes together! Over the past four units, you've built an increasingly capable agent: it has a professional persona (Unit 1), can search the web (Unit 2), knows your firm's policies (Unit 3), and guides users through a structured intake conversation (Unit 4). But so far, your agent has only been able to *talk* — it generates text, answers questions, and walks users through processes, yet it can't actually *do* anything in the real world.
+Welcome to Unit 5 of the **Foundry Agents Essentials** workshop — and the moment everything comes together! Over the past four units, you've built an increasingly capable agent: it has a professional persona (Unit 1), can search the web (Unit 2), knows your firm's policies (Unit 3), and has polished instructions with scope boundaries, conversational flow patterns, and a structured intake workflow (Unit 4). But so far, your agent has only been able to *talk* — it generates text, answers questions, and walks users through processes, yet it can't actually *do* anything in the real world.
 
 That changes now. In this unit, you'll connect your onboarding-agent to a **live client onboarding tracker** application using the **Model Context Protocol (MCP)**. Once connected, the agent will be able to create new client onboarding records, update matter statuses, and add compliance notes — all by calling real API endpoints on a running application. You'll watch the agent take an action in the Foundry playground and then see the result appear in a live web dashboard, in real time.
 
@@ -14,13 +14,13 @@ For legal firms, this is where AI agents translate intelligence into action acro
 
 Before starting this unit, make sure you have:
 
-- ✅ Completed [Unit 4: Instructions & Conversational Flow](./unit-4-instructions-and-flow.md)
+- ✅ Completed [Unit 4: Crafting Instructions & Conversational Flow](./unit-4-instructions-and-flow.md)
 - ✅ Your **onboarding-agent** is working in the Foundry playground with all prior capabilities configured (Bing grounding, file-based knowledge grounding, structured intake instructions)
 - ✅ Infrastructure deployed via `azd up` (this deploys the onboarding tracker web app to Azure App Service)
-- ✅ The onboarding tracker web app is running and accessible at your `AZURE_WEBAPP_URL`
+- ✅ The onboarding tracker web app is running and accessible (you'll find the URL in the Azure Portal)
 - ✅ Access to the [Microsoft Foundry portal](https://ai.azure.com)
 
-> **📝 Note:** Your `AZURE_WEBAPP_URL` was output when you ran `azd up`. To find it again, run `azd env get-values` from the repository root and look for `AZURE_WEBAPP_URL`. You can also find the URL in the [Azure Portal](https://portal.azure.com) by navigating to your resource group and selecting the App Service resource.
+> **📝 Note:** You can find your web app URL in the [Azure Portal](https://portal.azure.com): navigate to your resource group → select the **App Service** resource → on the Overview page, the URL is shown under **Default domain** (e.g., `https://app-xxxx.azurewebsites.net`).
 
 ---
 
@@ -58,15 +58,7 @@ Your onboarding tracker MCP server exposes five tools:
 
 ### Why MCP Matters for Legal Firms
 
-The pattern you're about to see — connecting an agent to a backend system via MCP — is the same pattern you'd use to connect to any system your firm relies on:
-
-- **Practice management systems** — Create matters, assign attorneys, track deadlines
-- **Document management systems** — File documents, retrieve templates, manage versions
-- **Billing platforms** — Log time entries, generate invoices, check outstanding balances
-- **Court filing systems** — Check filing deadlines, submit documents, track case status
-- **Compliance databases** — Run conflict checks, log screening results, flag risk factors
-
-MCP provides the universal adapter. Build one MCP server for each system, and your agents can interact with all of them.
+The pattern you're about to see — connecting an agent to a backend system via MCP — is the same pattern you'd use to connect to practice management systems, document management, billing platforms, or any other system your firm relies on. MCP provides the universal adapter. Build one MCP server for each system, and your agents can interact with all of them.
 
 ---
 
@@ -76,11 +68,10 @@ MCP provides the universal adapter. Build one MCP server for each system, and yo
 
 Before connecting the agent, let's see the application it will be interacting with.
 
-1. Find your `AZURE_WEBAPP_URL`. If you don't have it handy, run the following from the repository root:
-
-   ```bash
-   azd env get-values | findstr AZURE_WEBAPP_URL
-   ```
+1. Find your web app URL in the [Azure Portal](https://portal.azure.com):
+   - Navigate to your **resource group**
+   - Select the **App Service** resource
+   - On the **Overview** page, copy the URL shown under **Default domain** (e.g., `https://app-xxxx.azurewebsites.net`)
 
 2. Open the URL in your browser. You should see the **Client Onboarding Tracker** — a React dashboard with:
    - **Status cards** at the top showing counts by status (pending, in-review, approved, etc.)
@@ -116,9 +107,9 @@ Now let's connect your onboarding-agent to the tracker's MCP server.
 5. Click **Add** to add a new tool.
 6. Select **Custom** and then **MCP**.
 7. Configure the MCP connection:
-   - **Server URL:** `{AZURE_WEBAPP_URL}/mcp` — replace `{AZURE_WEBAPP_URL}` with your actual URL (e.g., `https://app-xxxx.azurewebsites.net/mcp`)
+   - **Server URL:** `https://app-xxxx.azurewebsites.net/mcp` — replace with your actual App Service URL from the Azure Portal, appending `/mcp`
    - **Authentication:** Unauthenticated
-   - **Name:** `Onboarding-Tracker`
+   - **Name:** `onboarding-tracker`
 8. Click **Connect**. Foundry will register the MCP server connection. The agent discovers tools at runtime — you may not see individual tools listed in the configuration UI.
 9. Click **Save** to save your agent configuration.
 
@@ -271,7 +262,7 @@ This is the capstone of the entire workshop. You'll run a **complete guided inta
 
 > **💡 Tip:** This end-to-end flow demonstrates the full agent lifecycle: **knowledge** (the agent knows firm policies from the handbook) + **instructions** (the agent follows a structured intake process) + **tools** (the agent creates real records via MCP) = a complete, automated workflow. This is what production-ready AI agents look like.
 
-> **📝 Note:** The agent may word things slightly differently each time you run through this flow — that's the nature of language models. But the structured instructions ensure it always collects the same core information and follows the same logical sequence.
+> **📝 Note:** The agent may word things slightly differently each time you run through this flow — that's the nature of language models. Structured instructions improve consistency, but for scenarios where you need **guaranteed step sequences and deterministic flow control**, you'll use Workflow Agents in Unit 6.
 
 ---
 
@@ -316,12 +307,13 @@ Your agent now has four distinct capabilities: web search (Bing), firm knowledge
 | **Unit 1** | Declarative agent + instructions | Agent has a persona and can chat |
 | **Unit 2** | Grounding with Bing | Agent searches the web for current information |
 | **Unit 3** | File-based knowledge grounding | Agent answers from uploaded documents with citations |
-| **Unit 4** | Structured instructions + conversational flow | Agent guides users through a step-by-step intake process |
+| **Unit 4** | Structured instructions + conversational flow | Agent has scope boundaries, consistent personality, conversational patterns, and a structured intake workflow |
 | **Unit 5** | MCP tools + onboarding tracker | Agent creates records, updates status, and takes real actions |
 
 ### Key Takeaway
 
 MCP transforms your agent from a **conversational assistant** into a **workflow automation tool**. Without MCP, the agent can talk about onboarding but can't actually do it. With MCP, the agent completes the entire process — gathering information, applying firm policies, and creating the record in your system. For legal firms, this is the pattern that unlocks real productivity gains: the same MCP approach connects to practice management systems, document management platforms, billing software, court filing systems, and any other tool your firm uses. The protocol is open, the integration is standardized, and the agent handles the orchestration.
+
 
 ### When One Agent Isn't Enough — Multi-Agent Orchestration
 
@@ -336,8 +328,6 @@ There are two ways to coordinate multiple agents:
 
 You'll build a workflow agent in **[Unit 6](./unit-6-workflow-agents.md)** using the portal's visual builder — no code needed. But if your firm needs dynamic agent-to-agent delegation (e.g., a triage agent that routes inquiries to the right practice group's specialist agent based on matter type), that's where you'd move to pro-code using an orchestration framework like the [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) SDKs available for Python and .NET, or other multi-agent orchestration framework. 
 
-> **📝 Note:** Going pro-code doesn't mean throwing away what you've built. Agents you create in the portal can be called from code through Foundry's Agent Service. The portal is where you prototype and refine individual agents; an orchestration framework is where you wire them together for complex, dynamic scenarios.
-
 > **💡 Foundry + Microsoft Agent Framework:** Foundry agents are designed to integrate seamlessly with the [Microsoft Agent Framework](https://github.com/microsoft/agent-framework). You can deploy agents built in the Foundry portal as hosted endpoints, then use the Agent Framework to orchestrate them alongside code-first agents in Python or .NET. This gives you the best of both worlds — rapid prototyping in the portal for individual agents, and the Agent Framework for production-grade multi-agent coordination with features like state management, event-driven routing, and agent-to-agent communication.
 
 ### What's Next
@@ -348,18 +338,16 @@ In **[Unit 6: Workflow Agents](./unit-6-workflow-agents.md)**, we'll move from s
 
 ## Key Concepts
 
-- **Model Context Protocol (MCP)** — An open standard that defines how AI agents communicate with external tools and services. MCP provides a universal protocol — like USB-C for AI — so any MCP-compatible agent can connect to any MCP server without custom integration code.
+- **Model Context Protocol (MCP)** — An open standard that defines how AI agents communicate with external tools and services. Like USB-C for AI — any MCP-compatible agent can connect to any MCP server without custom integration code.
 
-- **MCP Server** — A service that exposes tools to AI agents via the MCP protocol. Each tool has a name, description, and input schema. The server handles incoming tool calls and returns results. In this unit, the onboarding tracker's FastAPI backend serves as the MCP server at the `/mcp` endpoint.
+- **MCP Server** — A service that exposes tools to AI agents via MCP. Each tool has a name, description, and input schema. In this unit, the onboarding tracker's FastAPI backend serves as the MCP server at `/mcp`.
 
-- **Streamable HTTP** — The transport protocol used by MCP to communicate over standard HTTPS. The agent sends tool calls as HTTP requests to the MCP server URL, making it firewall-friendly and compatible with standard web infrastructure.
+- **Streamable HTTP** — The transport protocol used by MCP over standard HTTPS, making it firewall-friendly and compatible with standard web infrastructure.
 
-- **Tool Discovery** — The process by which an agent automatically detects the tools available on an MCP server. When you connect an MCP server in Foundry, the agent reads the server's tool catalog — including names, descriptions, and input schemas — without any manual configuration.
+- **Tool Discovery** — The agent automatically detects available tools on an MCP server by reading the server's tool catalog — no manual configuration needed.
 
-- **Read vs. Write Operations** — Read tools (like `list_onboardings` and `get_onboarding`) retrieve data without changing state and are safe to call repeatedly. Write tools (like `create_onboarding`, `update_status`, and `add_note`) modify data in the target system and represent real actions with real consequences.
+- **Read vs. Write Operations** — Read tools (like `list_onboardings`) retrieve data safely. Write tools (like `create_onboarding`) modify state and represent real actions with real consequences.
 
-- **Agent Tool Chaining** — When an agent calls multiple tools in sequence within a single conversation to accomplish a complex task. For example, the agent might call `create_onboarding` to create a record, then `add_note` to attach a compliance comment, then `get_onboarding` to confirm the final state.
+- **Agent Tool Chaining** — When an agent calls multiple tools in sequence within a single conversation — e.g., creating a record, adding a note, then confirming the result.
 
-- **Real-Time Feedback Loops** — The pattern where an agent takes an action (via MCP), the target application's state changes, and the user sees the result immediately. In this unit, you saw this when the agent created a record and it appeared in the tracker dashboard within seconds.
-
-> **💡 Tip:** The MCP ecosystem is growing rapidly. To explore available MCP servers, community tools, and the full protocol specification, visit [modelcontextprotocol.io](https://modelcontextprotocol.io). As more systems expose MCP endpoints, your agents will be able to connect to an ever-expanding set of tools — all using the same universal protocol you learned in this unit.
+> **💡 Tip:** The MCP ecosystem is growing rapidly. Visit [modelcontextprotocol.io](https://modelcontextprotocol.io) to explore available servers, community tools, and the full protocol specification.
