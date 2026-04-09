@@ -110,7 +110,7 @@ Think of it like a security checkpoint: the **risk** is what you're screening fo
 
    | Intervention Point | Description |
    |---|---|
-   | **User input** | Evaluates the user's message before the model processes it Best for catching prompt attacks, jailbreaks, and harmful requests early.|
+   | **User input** | Evaluates the user's message before the model processes it. Best for catching prompt attacks, jailbreaks, and harmful requests early. |
    | **Tool call** (Preview) | Evaluates data the agent proposes to send to a tool. Catches harmful content being sent to external tools. |
    | **Tool response** (Preview) | Evaluates content returned from a tool. Catches indirect attacks hidden in tool data. |
    | **Output** | Evaluates the agent's final response before it reaches the user. Best for catching harmful content the model may generate. |
