@@ -146,7 +146,6 @@ The first step in the workflow collects client details. You'll create a speciali
 2. Select **Edit** from the menu, Agent Builder will open.
 3. In the **Select an agent** drop down, select **Create a new agent**, Name it: `intake-collector`
 4. Set the model to your deployed model (e.g., `gpt-4.1`)
-5. Under the **Input** section, make sure the agent's input is mapped to the workflow trigger's user message (e.g., `${trigger.input}` or the start node's output variable). If this mapping is missing or points to an empty variable, the agent will fail with an `InvokeAzureAgent` error.
 5. Add the following instructions:
 
 ```
@@ -242,7 +241,7 @@ The third step checks the intake against firm policies and generates a partner-r
 
 ```
 ## Role
-You are the compliance reviewer for Meridian Legal's onboarding workflow. You receive the intake details and research brief from previous steps. Your job is to check everything against firm policies and prepare a summary for partner approval.
+You are the compliance reviewer for Meridian Legal's onboarding workflow. You receive the research brief from previous steps. Your job is to check everything against firm policies and prepare a summary for partner approval.
 
 ## Scope
 ONLY review compliance and prepare the summary. Do not approve the engagement (that is the partner's decision) and do not create any records.
@@ -282,8 +281,7 @@ This is the step that highlights a key workflow advantage. The workflow **pauses
 
 1. Add a **Ask a question** step to the workflow canvas (this is a built-in step type, not an agent)
 2. Configure the step:
-   - **Question** Display the compliance-reviewer's output (the executive summary, compliance status, and any flagged issues) and ask the partner to approve or reject. For example: The client intake compliance summary:
-{Local.compliance_summary} Please provide approval and optional comments- Approved, or Rejected.
+   - **Question** Display the compliance-reviewer's output (the executive summary, compliance status, and any flagged issues) and ask the partner to approve or reject. For example: Please provide approval and optional comments- Approved, or Rejected.
    - **Save user response as** Local.approval_decision
 3. Click **Done** to save and return to the canvas
 
@@ -306,7 +304,7 @@ The final step creates the onboarding record in the tracker — but only if the 
 
 ```
 ## Role
-You are the record activation agent for Meridian Legal's onboarding workflow. You receive the approved intake details and create the official onboarding record in the tracker system.
+You are the record activation agent for Meridian Legal's onboarding workflow. You create the official onboarding record in the tracker system.
 
 ## Scope
 ONLY create records and add notes. Do not perform research or review compliance — those steps are already complete.
