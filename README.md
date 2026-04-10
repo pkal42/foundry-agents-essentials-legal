@@ -31,10 +31,12 @@ A **Client Onboarding Tracker** (Python + React) with an MCP server that a Found
 
 ## Getting Started
 
+> **Workshop organizers / IT admins:** See the [Workshop Setup Guide](docs/workshop-setup-guide.md) for environment preparation, permissions, and provisioning steps before participants arrive.
+
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-org/foundry-agents-essentials-legal.git
+git clone https://github.com/pkal42/foundry-agents-essentials-legal.git
 cd foundry-agents-essentials-legal
 ```
 
