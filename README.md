@@ -26,8 +26,9 @@ A **Client Onboarding Tracker** (Python + React) with an MCP server that a Found
 - Azure subscription with **Owner** or **Contributor + User Access Administrator** roles
 - [Azure Developer CLI (`azd`)](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
 - [Python 3.11+](https://www.python.org/downloads/)
-- [Node.js 18+](https://nodejs.org/)
 - Access to [Microsoft Foundry](https://ai.azure.com)
+
+> **Note:** Node.js is only needed for [local frontend development](#frontend), not for deploying to Azure. The frontend is pre-built and committed to the repository.
 
 ## Getting Started
 
@@ -151,8 +152,28 @@ The `docs/assets/` folder contains files used during the lab exercises:
 
 ## Redeployment
 
-After making code changes, redeploy with:
+After making **backend** code changes, redeploy with:
 
 ```bash
 azd deploy
 ```
+
+If you modify the **frontend** (React source in `src/app/frontend/`), rebuild and update the committed static files before deploying:
+
+```bash
+cd src/app/frontend
+npm install
+npm run build
+```
+
+Then replace the backend static directory:
+
+```bash
+# macOS/Linux
+rm -rf ../backend/static && cp -r dist ../backend/static
+
+# Windows (PowerShell)
+Remove-Item -Recurse -Force ..\backend\static; Copy-Item -Recurse dist ..\backend\static
+```
+
+Commit the updated static files, then run `azd deploy`.

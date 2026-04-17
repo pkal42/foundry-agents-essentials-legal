@@ -86,9 +86,10 @@ Ensure participants have the following installed on their machines **before** th
 |------|---------|-------------|
 | [Azure Developer CLI (`azd`)](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd) | Latest | `winget install microsoft.azd` |
 | [Python](https://www.python.org/downloads/) | 3.11+ | Required for backend deployment |
-| [Node.js](https://nodejs.org/) | 18+ | Required for frontend build during deployment |
 | [Git](https://git-scm.com/) | Latest | Clone the repository |
 | Modern browser | Edge or Chrome | Access Foundry portal and tracker dashboard |
+
+> **💡 Tip:** Node.js is **not** required for deployment — the frontend is pre-built. It's only needed if participants want to modify the React frontend locally.
 
 > **💡 Tip:** If participants use company-managed machines with restricted installs, consider providing pre-configured VMs or Dev Boxes with all tools pre-installed.
 
