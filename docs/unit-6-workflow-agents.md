@@ -124,7 +124,7 @@ This is the fundamental shift: **you are the architect of the process, not the A
 Let's start by opening the workflow builder in the Foundry portal.
 
 1. Go to the [Microsoft Foundry portal](https://ai.azure.com) and open your **onboarding-lab** project
-2. On the upper-right menu, select **Build**, then select **Agents** on the left menu, and then select the **Workflows** tab under Agents.
+2. In the top navigation bar, select **Build**, then select **Agents** in the left menu, and then select the **Workflows** tab under Agents.
 3. Click **Create workflow**. You'll see workflow template options. Select **Sequential** — this creates a linear, step-by-step workflow where each step runs after the previous one completes. You should now see the Visualizer display of the workflow with three agent cards and a sequential flow created with Start and the Agent cards.
 4. Click **+** between the Start and the first Agent card to add a new step **Set variable**. Select **Set Variable** node, and select **Edit** and configure variables that the workflow will use to pass data between steps. Add the following variables with leaving **To value** as is for now (you'll set them in the agent steps later):
    - `Local.intake_details` — The structured output from Step 1 (client name, matter type, scope, etc.)
@@ -279,10 +279,10 @@ Again, this agent has exactly one capability: checking firm policies via the kno
 
 This is the step that highlights a key workflow advantage. The workflow **pauses** and waits for a human to review the summary and make a decision — something that's natural in a workflow but not built into a prompt agent's conversation model.
 
-1. Add a **Ask a question** step to the workflow canvas (this is a built-in step type, not an agent)
+1. Add an **Ask a question** step to the workflow canvas (this is a built-in step type, not an agent)
 2. Configure the step:
-   - **Question** Display the compliance-reviewer's output (the executive summary, compliance status, and any flagged issues) and ask the partner to approve or reject. For example: Please provide approval and optional comments- Approved, or Rejected.
-   - **Save user response as** Local.approval_decision
+   - **Question** Display the compliance-reviewer's output (the executive summary, compliance status, and any flagged issues) and ask the partner to approve or reject. For example: Please provide approval and optional comments — Approved, or Rejected.
+   - **Save user response as** `Local.approval_decision`
 3. Click **Done** to save and return to the canvas
 
 When the workflow reaches this step, it **stops and waits**. No timer, no timeout, no AI making the decision. A real person — the approving partner — reviews the executive summary from Step 3, sees the research findings from Step 2, and makes a judgment call. Only when they respond does the workflow continue.
@@ -345,7 +345,7 @@ This is the only agent in the workflow with write access to the onboarding track
 Now that all five steps are on the canvas, let's wire them together.
 
 1. **Verify the sequence**: Make sure the steps are connected in order:
-   - intake-collector → client-researcher → compliance-reviewer → partner-approval → record-creator
+   - intake-collector → client-researcher → compliance-reviewer → **Ask a question** (human approval) → record-creator
 
 2. **Review the complete flow**: Step back and look at the entire canvas. You should see five connected steps forming a linear pipeline. Each step has:
    - A specialized agent (or human gate)

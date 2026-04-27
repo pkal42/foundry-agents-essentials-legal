@@ -62,7 +62,7 @@ A declarative agent in Foundry has three core building blocks:
 Before you can create an agent, you need to deploy a language model to your AI Services account. The infrastructure deployment (`azd up`) creates the Foundry account and project, but does **not** deploy any models — you'll do that here.
 
 1. In the Foundry portal, navigate to your **onboarding-lab** project.
-2. Select the **Build** tab on top-right. In the left-hand navigation, click on **Models**.
+2. In the top navigation bar, select **Build**. In the left-hand navigation, click on **Models**.
 3. Click **Deploy a base model**.
 4. Search for and select a chat model (e.g., `gpt-4.1`).
 5. Click **Deploy** and choose **Custom Settings**. Choose the **GlobalStandard** deployment type and set the capacity (e.g., 100K tokens per minute).
@@ -99,7 +99,7 @@ Before you can create an agent, you need to deploy a language model to your AI S
 Now let's create your first declarative agent.
 
 1. From the Foundry home page, find and select the project that was created during your `azd up` deployment (it will be named **onboarding-lab**).
-2. Select the **Build** tab on top-right. In the left-hand navigation, click on **Agents**.
+2. In the top navigation bar, select **Build**. In the left-hand navigation, click on **Agents**.
 3. Click the **Create Agent** button to start creating a new declarative agent.
 4. Give your agent a name:
 
