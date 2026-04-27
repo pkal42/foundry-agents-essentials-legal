@@ -101,7 +101,7 @@ Before connecting the agent, let's see the application it will be interacting wi
 Now let's connect your onboarding-agent to the tracker's MCP server.
 
 1. Open the [Microsoft Foundry portal](https://ai.azure.com) and navigate to your **onboarding-lab** project.
-2. Select the **Build** tab on top-right. In the left-hand navigation, click on **Agents**.
+2. In the top navigation bar, select **Build**. In the left-hand navigation, click on **Agents**.
 3. Select the **onboarding-agent** to open its configuration.
 4. Scroll down to the **Tools** section. You should already see **Grounding with Bing Search** listed from Unit 2.
 5. Click **Add** to add a new tool.

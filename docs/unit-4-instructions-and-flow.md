@@ -70,7 +70,7 @@ Concrete examples of ideal input/output pairs. These are the most powerful tool 
 Before changing anything, let's document how the agent currently behaves. This will make the "after" comparison much more satisfying.
 
 1. Open the [Microsoft Foundry portal](https://ai.azure.com) and navigate to your **onboarding-lab** project.
-2. Select the **Build** tab on top-right. In the left-hand navigation, click on **Agents**.
+2. In the top navigation bar, select **Build**. In the left-hand navigation, click on **Agents**.
 3. Select the **onboarding-agent** to open its configuration.
 4. Look at the **Instructions** field. You should see the knowledge-grounded prompt from Unit 3 — it includes the firm-specific boundary and Bing distinction, but lacks structure.
 5. In the **playground**, send each of the following test prompts and **note the agent's responses** (mentally or in a text file):
@@ -244,7 +244,7 @@ Let's break down why each section matters:
 Now let's apply the new structured instructions to your agent.
 
 1. Open the [Microsoft Foundry portal](https://ai.azure.com) and navigate to your **onboarding-lab** project.
-2. Select the **Build** tab on top-right. In the left-hand navigation, click on **Agents**.
+2. In the top navigation bar, select **Build**. In the left-hand navigation, click on **Agents**.
 3. Select the **onboarding-agent** to open its configuration.
 4. In the **Instructions** field, **select all the existing text and delete it**.
 5. Paste the full structured prompt from Step 2 into the Instructions field.

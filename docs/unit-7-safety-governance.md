@@ -43,13 +43,13 @@ This is **defense in depth** — even if one layer is bypassed, the others still
 Before adding new controls, let's see what Foundry provides by default.
 
 1. Open the [Microsoft Foundry portal](https://ai.azure.com) and navigate to your **onboarding-lab** project.
-2. Select the **Build** tab on top-right. In the left-hand navigation, click on **Agents**.
+2. In the top navigation bar, select **Build**. In the left-hand navigation, click on **Agents**.
 3. Select the **onboarding-agent**.
-4. Open the agent's **Guardrails** section — Foundry assigns the **Microsoft.DefaultV2** guardrail to every model deployment by default. When an agent has no custom guardrail assigned, it inherits the guardrail of its underlying model deployment.
+4. Open the agent's **Guardrails** section — Foundry assigns a default guardrail (typically named **DefaultV2** or **Microsoft.DefaultV2**, depending on portal version) to every model deployment. When an agent has no custom guardrail assigned, it inherits the guardrail of its underlying model deployment.
 5. Review the default controls: Hate and Fairness, Violence, Self-Harm, Sexual, and Jailbreak detection
 6. Note the default severity thresholds (typically **Medium**)
 
-> **📝 Note:** The **Microsoft.DefaultV2** guardrail provides a baseline safety net, but its defaults are designed for general-purpose use. Legal agents discussing case-related sensitive topics need a custom guardrail that balances protection with usability.
+> **📝 Note:** The default guardrail provides a baseline safety net, but its defaults are designed for general-purpose use. Legal agents discussing case-related sensitive topics need a custom guardrail that balances protection with usability.
 
 ---
 
@@ -74,7 +74,7 @@ Think of it like a security checkpoint: the **risk** is what you're screening fo
 #### Create the Guardrail
 
 1. In the Foundry portal, navigate to your project
-2. Select the **Build** tab on the top-right. In the left-hand navigation, click on **Guardrails**
+2. In the top navigation bar, select **Build**. In the left-hand navigation, click on **Guardrails**
 3. Click **Create** in the top right. The guardrail wizard opens at **Step 1: Add Controls**
 
 #### Step 1 of 3: Add Controls
@@ -227,8 +227,8 @@ Guardrail controls handle harmful content at the platform level. But legal firms
 
 Even with guardrail controls and instruction boundaries, an agent might include sensitive PII in its responses. **PII Detection** through Azure AI Language lets you scan agent outputs before sharing externally.
 
-1. Navigate to the [Microsoft Foundry portal](https://ai.azure.com), select **Build** in the top-right
-2. Select **Models** from the left menu, select the **AI Services** tab, and select **Azure Language - Text PII Redaction**
+1. Navigate to the [Microsoft Foundry portal](https://ai.azure.com), and in the top navigation bar select **Build**
+2. Select **Models** from the left menu, select the **AI Services** tab, and select **Language - PII detection** (sometimes listed as **Azure Language - Text PII Redaction**, depending on portal version)
 
 > **📝 Note:** PII Detection is a standalone Azure AI Language capability. The pattern is **"generate, then scan"** — your agent produces a response, and before sharing externally, you run it through PII detection to flag sensitive information.
 

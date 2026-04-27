@@ -70,7 +70,7 @@ Before configuring the agent, let's verify that the Bing Grounding resource exis
 Now let's connect the Bing Grounding resource to your onboarding-agent.
 
 1. Open the [Microsoft Foundry portal](https://ai.azure.com) and navigate to your project.
-2. Select the **Build** tab on top-right. In the left-hand navigation, click on **Agents**.
+2. In the top navigation bar, select **Build**. In the left-hand navigation, click on **Agents**.
 3. Select the **onboarding-agent** agent you created in Unit 1 to open its configuration.
 4. Scroll down to the **Tools** section of the agent configuration. Remove the default **Web search (preview)** tool if one is present.
 5. Click **Add** and browse all the available tools.

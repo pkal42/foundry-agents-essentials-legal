@@ -127,7 +127,7 @@ Before uploading, let's take a quick look at the documents you'll be giving to y
 Now let's give this knowledge to your onboarding-agent. You'll upload all five documents at once.
 
 1. Open the [Microsoft Foundry portal](https://ai.azure.com) and navigate to your project.
-2. Select the **Build** tab on top-right. In the left-hand navigation, click on **Agents**.
+2. In the top navigation bar, select **Build**. In the left-hand navigation, click on **Agents**.
 3. Select the **onboarding-agent** agent to open its configuration.
 4. Scroll down to the **Tools** section of the agent configuration.
 5. Click **Add** and select **Files**.
@@ -281,7 +281,7 @@ This is where having **multiple documents** really shines. Let's test your agent
    If a potential conflict is identified during the MCO engagement, what happens to the data and documents while the Ethics Committee reviews it? Can anything be destroyed?
    ```
 
-   The agent should connect the conflict resolution procedures (from the conflict policy — Ethics Committee has 3 business days to determine) with the legal hold requirements (from the data retention policy — legal holds suspend all destruction schedules). This requires reasoning across the PDF and markdown policies simultaneously.
+   The agent should connect the conflict resolution procedures (from the conflict policy — Ethics Committee has 5 business days to determine) with the legal hold requirements (from the data retention policy — legal holds suspend all destruction schedules). This requires reasoning across the PDF and markdown policies simultaneously.
 
 6. Test the retainer agreement template knowledge:
 
