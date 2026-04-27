@@ -153,8 +153,8 @@ With your dataset uploaded, complete the rest of the **Create new evaluation** w
 2. **Step 2 — Data:** Confirm **Existing dataset** is selected and the `onboarding_agent_eval` row is checked, then click **Next**
 
 3. **Step 3 — Field mapping:** Map the dataset columns to the evaluation inputs:
-   - Map the agent input / query field to `${data.query}`
-   - Map the expected response / ground truth field to `${data.ground_truth}`
+   - Map the agent input / query field to `${item.query}`
+   - Map the expected response / ground truth field to `${item.ground_truth}`
    Click **Next**
 
 4. **Step 4 — Configure agents:** Confirm the agent run settings (model, threading, any required parameters) and click **Next**. The defaults are fine for the workshop.
@@ -168,7 +168,7 @@ With your dataset uploaded, complete the rest of the **Create new evaluation** w
    | **Coherence** | Are responses well-structured and logically consistent? |
    | **Safety** | Do responses comply with content safety rules? |
 
-   For each evaluator, confirm the field mapping uses `${data.query}` for the input and `${data.ground_truth}` where ground truth is required. Click **Next**.
+   For each evaluator, confirm the field mapping uses `${item.query}` for the input and `${item.ground_truth}` where ground truth is required. Click **Next**.
 
 6. **Step 6 — Review:** Review the run name, target, dataset, and selected evaluators. Click **Submit** (or **Create**) to start the run.
 
